@@ -14,7 +14,7 @@ VIDEO - https://youtu.be/dDIrMdZ5Wik
 - qb_target
 
 # RESOURCES
-MLO - https://www.gta5-mods.com/maps/mlo-burgershot-2023-add-on-sp-fivem
+MLO - https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem
 
 # INSTALLATION
 - Start after [qb]
