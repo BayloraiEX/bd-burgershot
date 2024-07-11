@@ -117,7 +117,7 @@ end)
 exports['qb-target']:AddBoxZone("BurgerShotBackStorage", vector3(-1204.94, -893.77, 14.0), 0.9, 0.9, {
 	name = "BurgerShotBackStorage",
 	heading = 347.27,
-	debugPoly = true,
+	debugPoly = false,
 	minZ = 14.0 - 2,
 	maxZ = 14.0 + 2,
 }, {
