@@ -1,24 +1,41 @@
 local QBCore = exports['qb-core']:GetCoreObject()
+local ox_inventory = exports.ox_inventory
 
 local src = source
 local Player = QBCore.Functions.GetPlayer(src)
 local totalbags = math.random(Config.MinBag, Config.MaxBag)
 
-RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+if Config.InventorySystem == 'ox' then
+    RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+        
+        ox_inventory:AddItem(src, 'bs_bag', totalbags)
+    end)
     
-    exports['qb-inventory']:AddItem(src, 'bs_bag', totalbags, false, false)
-    TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'add', totalbags)
-end)
+    RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+    
+        ox_inventory:RemoveItem(src, 'bs_bag', totalbags, false)
+    end)
+elseif Config.InventorySystem == 'qb' then
+    RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+        
+        exports['qb-inventory']:AddItem(src, 'bs_bag', totalbags, false, false)
+        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'add', totalbags)
+    end)
 
-RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-
-    exports['qb-inventory']:RemoveItem(src, 'bs_bag', totalbags, false)
-    TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'remove')
-end)
+    RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
+        local src = source
+        local Player = QBCore.Functions.GetPlayer(src)
+    
+        exports['qb-inventory']:RemoveItem(src, 'bs_bag', totalbags, false)
+        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'remove')
+    end)
+end
 
 RegisterNetEvent('bd-burgershot:server:FinishDeliveryPay', function()
     local src = source

@@ -1,25 +1,45 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
------ | CREATING DRINK MENU TARGET | -----
-exports['qb-target']:AddBoxZone("BurgershotDrinkMenu", vector3(-1199.44, -895.52, 14.0), 0.9, 0.9, {
-    name = "BurgershotDrinkMenu",
-    heading = 300.45,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:OpenDrinkMenu",
-            icon = "fa-solid fa-faucet",
-            label = "Drink Menu",
-            job = Config.Jobname,
+if Config.InventorySystem == 'ox' then
+    ----- | CREATING DRINK MENU TARGET | -----
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1199.64, -895.56, 14.13, 271.33),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		debug = drawZones,
+		options = {
+			{
+				name = 'burgershot_drinkmenu',
+				event = 'bd-burgershot:client:OpenDrinkMenu',
+				icon = 'fa-solid fa-equals',
+				label = 'Drink Menu',
+                groups = {
+                    Config.Jobname
+                },
+			},
+		}
+	})
+elseif Config.InventorySystem == 'qb' then
+    ----- | CREATING DRINK MENU TARGET | -----
+    exports['qb-target']:AddBoxZone("BurgershotDrinkMenu", vector3(-1199.44, -895.52, 14.0), 0.9, 0.9, {
+        name = "BurgershotDrinkMenu",
+        heading = 300.45,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:OpenDrinkMenu",
+                icon = "fa-solid fa-faucet",
+                label = "Drink Menu",
+                job = Config.Jobname
+            },
         },
-    },
-    distance = 1.5
-})
-
+        distance = 1.5
+    })
+end
 lib.registerContext({
     id = 'burgershot_drinks',
     title = 'Drink Menu',
@@ -41,11 +61,9 @@ lib.registerContext({
         },
     },
 })
-
 RegisterNetEvent('bd-burgershot:client:OpenDrinkMenu', function()
     lib.showContext('burgershot_drinks')
 end)
-
 lib.registerContext({
     id = 'burgershot_softdrinks',
     title = 'Soft Drinks',
@@ -81,7 +99,6 @@ lib.registerContext({
         },
     },
 })
-
 lib.registerContext({
     id = 'burgershot_coffee',
     title = 'Coffee',
@@ -96,7 +113,6 @@ lib.registerContext({
         },
     },
 })
-
 lib.registerContext({
     id = 'burgershot_milkshakes',
     title = 'Milkshakes',
@@ -132,7 +148,6 @@ lib.registerContext({
         },
     },
 })
-
 ------|---------------------|------
 ----- | CREATING THE DRINKS | -----
 ------|---------------------|------

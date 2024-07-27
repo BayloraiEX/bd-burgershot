@@ -1,25 +1,82 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
------ | CREATING COOK MENU TARGET | -----
-exports['qb-target']:AddBoxZone("BurgershotCookMenu", vector3(-1202.93, -897.46, 14.0), 0.9, 0.9, {
-    name = "BurgershotCookMenu",
-    heading = 300.45,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:OpenCookMenu",
-            icon = "fa-solid fa-fire-burner",
-            label = "Cook Menu",
-            job = Config.Jobname,
+if Config.InventorySystem == 'ox' then
+    ----- | CREATING COOK MENU TARGET | -----
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1202.75, -897.33, 14.0, 303.63),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		debug = drawZones,
+		options = {
+			{
+				name = 'burgershot:cookmenu',
+				event = 'bd-burgershot:client:OpenCookMenu',
+				icon = 'fa-solid fa-fire-burner',
+				label = 'Cook Menu',
+                groups = {
+                    Config.Jobname
+                },
+			},
+		}
+	})
+    ----- | CREATING FRYER MENU TARGET | -----
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1202.02, -898.64, 13.69, 308.93),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		debug = drawZones,
+		options = {
+			{
+				name = 'burgershot:cookmenu',
+				event = 'bd-burgershot:client:OpenFryerMenu',
+				icon = 'fa-solid fa-fire-burner',
+				label = 'Fryer Menu',
+                groups = {
+                    Config.Jobname
+                },
+			},
+		}
+	})
+elseif Config.InventorySystem == 'qb' then
+    ----- | CREATING COOK MENU TARGET | -----
+    exports['qb-target']:AddBoxZone("BurgershotCookMenu", vector3(-1202.93, -897.46, 14.0), 0.9, 0.9, {
+        name = "BurgershotCookMenu",
+        heading = 300.45,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:OpenCookMenu",
+                icon = "fa-solid fa-fire-burner",
+                label = "Cook Menu",
+                job = Config.Jobname
+            },
         },
-    },
-    distance = 1.5
-})
-
+        distance = 1.5
+    })
+    ----- | CREATING FRYER MENU TARGET | -----
+    exports['qb-target']:AddBoxZone("BurgershotFryerMenu", vector3(-1201.45, -899.0, 14.0), 0.9, 0.9, {
+        name = "BurgershotFryerMenu",
+        heading = 300.45,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:OpenFryerMenu",
+                icon = "fa-solid fa-fire-burner",
+                label = "Fryer Menu",
+                job = Config.Jobname
+            },
+        },
+        distance = 1.5
+    })
+end
 lib.registerContext({
     id = 'burgershot_cooks',
     title = 'Cooking Menu',
@@ -39,7 +96,6 @@ lib.registerContext({
 RegisterNetEvent('bd-burgershot:client:OpenCookMenu', function()
     lib.showContext('burgershot_cooks')
 end)
-
 lib.registerContext({
     id = 'burgershot_burgers',
     title = 'Main Menu',
@@ -83,13 +139,12 @@ lib.registerContext({
         {
             title = 'Chicken Wrap',
             description = 'Make 2x Chicken Wraps',
-            event = 'bd-burgershot:client:MakeWrap',
+            event = 'bd-burgershot:client:MakeChickenWrap',
             icon = 'bread-slice',
             iconColor = '#EC213A'
         },
     },
 })
-
 lib.registerContext({
     id = 'burgershot_extras',
     title = 'Deserts',
@@ -112,25 +167,6 @@ lib.registerContext({
     },
 })
 ---------------------------------------------------------------------------------------------------------------
------ | CREATING FRYER MENU TARGET | -----
-exports['qb-target']:AddBoxZone("BurgershotFryerMenu", vector3(-1201.45, -899.0, 14.0), 0.9, 0.9, {
-    name = "BurgershotFryerMenu",
-    heading = 300.45,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:OpenFryerMenu",
-            icon = "fa-solid fa-fire-burner",
-            label = "Fryer Menu",
-            job = Config.Jobname,
-        },
-    },
-    distance = 1.5
-})
 lib.registerContext({
     id = 'burgershot_fryer',
     title = 'Fryer Menu',
@@ -161,7 +197,6 @@ lib.registerContext({
 RegisterNetEvent('bd-burgershot:client:OpenFryerMenu', function()
     lib.showContext('burgershot_fryer')
 end)
-
 ------|--------------------|------
 ----- | CREATING THE FOODS | -----
 ------|--------------------|------

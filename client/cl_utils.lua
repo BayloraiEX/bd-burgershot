@@ -145,25 +145,51 @@ end)
 CreateThread(function()
     DecorRegister("t_vehicle", 1)
 end)
------ | SETTING THE CLOCK IN/OUT TARGET | -----
-exports['qb-target']:AddBoxZone("BurgershotClock", vector3(-1192.99, -898.32, 15.16), 1.9, 1.9, {
-    name = "BurgershotClock",
-    heading = 122.6,
-    debugPoly = false,
-    minZ = 15.16 - 2,
-    maxZ = 15.16 + 2,
-},{
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:ToggleDuty",
-            icon = "fa-solid fa-clipboard-user",
-            label = 'Clock In/Out',
-            job = Config.Jobname
+
+if Config.InventorySystem == 'ox' then
+    ---- | SETTING THE CLOCK IN/OUT TARGET | -----
+    exports.ox_target:addBoxZone({
+        coords = vector4(-1192.99, -898.32, 15.16, 122.6),
+        size = vec3(1, 1, 1),
+        rotation = 45,
+        debug = drawZones,
+        options = {
+            {
+                name = 'burgershot_duty',
+                event = 'bd-burgershot:client:ToggleDuty',
+                icon = 'fa-solid fa-clipboard-user',
+                label = 'Clock In/Out',
+                groups = {
+                    Config.Jobname
+                },
+            },
+        }
+    })
+    RegisterNetEvent('bd-burgershot:client:ToggleDuty', function()
+        TriggerServerEvent("QBCore:ToggleDuty")
+    end)
+elseif Config.InventorySystem == 'qb' then
+    ---- | SETTING THE CLOCK IN/OUT TARGET | -----
+    exports['qb-target']:AddBoxZone("BurgershotClock", vector3(-1192.99, -898.32, 15.16), 1.9, 1.9, {
+        name = "BurgershotClock",
+        heading = 122.6,
+        debugPoly = false,
+        minZ = 15.16 - 2,
+        maxZ = 15.16 + 2,
+    },{
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:ToggleDuty",
+                icon = "fa-solid fa-clipboard-user",
+                label = 'Clock In/Out',
+                job = Config.Jobname
+            },
         },
-    },
-    distance = 1.5
-})
-RegisterNetEvent('bd-burgershot:client:ToggleDuty', function()
-    TriggerServerEvent("QBCore:ToggleDuty")
-end)
+        distance = 1.5
+    })
+    RegisterNetEvent('bd-burgershot:client:ToggleDuty', function()
+        TriggerServerEvent("QBCore:ToggleDuty")
+    end)
+end
+

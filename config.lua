@@ -11,6 +11,7 @@
                               |_|                             
 --]] 
 Config = {}
+Config.InventorySystem = 'ox' -- Supports 'qb' & 'ox'
 
 Config.Jobname = 'burgershot'
 
