@@ -36,7 +36,8 @@ local function CreateLocalNPC(index)
     SetPedComponentVariation(BurgershotDeliveryPed, 4, 0, 0, 1)
     SetPedComponentVariation(BurgershotDeliveryPed, 6, 0, 0, 1)
     SetPedComponentVariation(BurgershotDeliveryPed, 0, 1, 0, 1)
-    ----- | CREATING TARGET FOR PED | -----
+    if Config.TargetSystem == 'qb' then
+        ----- | CREATING TARGET FOR PED | -----
         exports['qb-target']:AddTargetEntity(BurgershotDeliveryPed, {
             options = {
                 {
@@ -49,6 +50,19 @@ local function CreateLocalNPC(index)
             },
             distance = 1.5,
         })
+    elseif Config.TargetSystem == 'ox' then
+        exports.ox_target:addLocalEntity(BurgershotDeliveryPed, {
+            {
+                name = 'burgershot_delivery',
+                event = 'bd-burgershot:client:DeliveryStartAlert',
+                icon = 'fa-solid fa-truck-ramp-box',
+                label = 'Delivery Start',
+                groups = {
+                    Config.Jobname
+                },
+            }
+        })
+    end
     LocalNPCs[index].BurgershotDeliveryPed = BurgershotDeliveryPed
 end
 
@@ -209,21 +223,40 @@ RegisterNetEvent('bd-burgershot:client:RecieveDelivery', function()
         icon = 'burger',
         iconColor = '#F08080'
     })
-    exports['qb-target']:AddCircleZone("BurgershotDelivery", randomRoute, 1.0, {
-        name = "BurgershotDelivery",
-        debugPoly = false,
-    }, {
-        options = {
-            {
-                type = "client",
-                event = "bd-burgershot:client:CompleteDelivery",
-                icon = "fa-solid fa-bag-shopping",
-                label = 'Place on door step',
-                job = Config.Jobname
+    if Config.TargetSystem == 'qb' then
+        exports['qb-target']:AddCircleZone("BurgershotDelivery", randomRoute, 1.0, {
+            name = "BurgershotDelivery",
+            debugPoly = false,
+        }, {
+            options = {
+                {
+                    type = "client",
+                    event = "bd-burgershot:client:CompleteDelivery",
+                    icon = "fa-solid fa-bag-shopping",
+                    label = 'Place on door step',
+                    job = Config.Jobname
+                },
             },
-        },
-        distance = 2.5
-    })
+            distance = 2.5
+        })
+    elseif Config.TargetSystem == 'ox' then
+        exports.ox_target:addBoxZone({
+            coords = randomRoute,
+            name = 'burgerdelivery',
+            size = vec3(1, 1, 1),
+            rotation = 45,
+            options = {
+                {
+                    event = 'bd-burgershot:client:CompleteDelivery',
+                    icon = 'fa-solid fa-bag-shopping',
+                    label = 'Place On Door Step',
+                    groups = {
+                        Config.Jobname
+                    },
+                }
+            }
+        })
+    end
     print(randomRoute)
 end)
 
@@ -232,7 +265,12 @@ RegisterNetEvent('bd-burgershot:client:CompleteDelivery', function()
     DeliveryAnim()
     RemoveBlip(deliveryBlip)
     inJob = false
-    exports['qb-target']:RemoveZone("BurgershotDelivery")
+    if Config.TargetSystem == 'qb' then
+        --
+        exports['qb-target']:RemoveZone("BurgershotDelivery")
+    elseif Config.TargetSystem == 'ox' then
+        exports.ox_target:removeZone('burgerdelivery')
+    end
     TriggerServerEvent('bd-burgershot:server:FinishDelivery')
     TriggerServerEvent('bd-burgershot:server:FinishDeliveryPay')
     lib.notify({

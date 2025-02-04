@@ -48,66 +48,133 @@ local function CreateLocalNPC(index)
     local jobName = Config.Jobname
     local playerGrade = QBCore.Functions.GetPlayerData().job.grade.level
     ----- | CREATING TARGET FOR PED | -----
-    if playerGrade <= 1 then
-        exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
-            options = {
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:garageMenu", -- has bike and van
-                    icon = "fa-solid fa-warehouse",
-                    label = "Garage",
-                    job = Config.Jobname
+    if Config.TargetSystem == 'qb' then
+        if playerGrade <= 1 then
+            exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
+                options = {
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:garageMenu", -- has bike and van
+                        icon = "fa-solid fa-warehouse",
+                        label = "Garage",
+                        job = Config.Jobname
+                    },
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:storeGarage",
+                        icon = "fa-solid fa-square-parking",
+                        label = "Store Vehicle",
+                        job = Config.Jobname
+                    },
                 },
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:storeGarage",
-                    icon = "fa-solid fa-square-parking",
-                    label = "Store Vehicle",
-                    job = Config.Jobname
+                distance = 1.5,
+            })
+        elseif playerGrade == 2 or playerGrade == 3 then
+            exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
+                options = {
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:garageMenu1", -- has bike, van, and car.
+                        icon = "fa-solid fa-warehouse",
+                        label = "Garage",
+                        job = Config.Jobname
+                    },
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:storeGarage",
+                        icon = "fa-solid fa-square-parking",
+                        label = "Store Vehicle",
+                        job = Config.Jobname
+                    },
                 },
-            },
-            distance = 1.5,
-        })
-    elseif playerGrade == 2 or playerGrade == 3 then
-        exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
-            options = {
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:garageMenu1", -- has bike, van, and car.
-                    icon = "fa-solid fa-warehouse",
-                    label = "Garage",
-                    job = Config.Jobname
+                distance = 1.5,
+            })
+        elseif playerGrade >= 4 then
+            exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
+                options = {
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:garageMenu2", -- has bike, car, van and new van
+                        icon = "fa-solid fa-warehouse",
+                        label = "Garage",
+                        job = Config.Jobname
+                    },
+                    {
+                        type = "client",
+                        event = "bd-burgershot:client:storeGarage",
+                        icon = "fa-solid fa-square-parking",
+                        label = "Store Vehicle",
+                        job = Config.Jobname
+                    },
                 },
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:storeGarage",
-                    icon = "fa-solid fa-square-parking",
-                    label = "Store Vehicle",
-                    job = Config.Jobname
-                },
-            },
-            distance = 1.5,
-        })
-    elseif playerGrade >= 4 then
-        exports['qb-target']:AddTargetEntity(BurgershotGaragePed, {
-            options = {
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:garageMenu2", -- has bike, car, van and new van
-                    icon = "fa-solid fa-warehouse",
-                    label = "Garage",
-                    job = Config.Jobname
-                },
-                {
-                    type = "client",
-                    event = "bd-burgershot:client:storeGarage",
-                    icon = "fa-solid fa-square-parking",
-                    label = "Store Vehicle",
-                    job = Config.Jobname
-                },
-            },
-            distance = 1.5,
-        })
+                distance = 1.5,
+            })
+        end
+    elseif Config.TargetSystem == 'ox' then
+        if playerGrade <= 1 then
+            exports.ox_target:addLocalEntity(BurgershotGaragePed, {
+                    {
+                        name = 'burgershot_garageped',
+                        event = 'bd-burgershot:client:garageMenu',
+                        icon = 'fa-solid fa-warehouse',
+                        label = 'Garage',
+                        groups = {
+                            Config.Jobname
+                        },
+                    },
+                    {
+                        name = 'burgershot_storegarage',
+                        event = 'bd-burgershot:client:storeGarage',
+                        icon = 'fa-solid fa-square-parking',
+                        label = 'Store Vehicle',
+                        groups = {
+                            Config.Jobname
+                        },
+                    }
+                })
+        elseif playerGrade == 2 or playerGrade == 3 then
+            exports.ox_target:addLocalEntity(BurgershotGaragePed, {
+                    {
+                        name = 'burgershot_garageped',
+                        event = 'bd-burgershot:client:garageMenu1',
+                        icon = 'fa-solid fa-warehouse',
+                        label = 'Garage',
+                        groups = {
+                            Config.Jobname
+                        },
+                    },
+                    {
+                        name = 'burgershot_storegarage',
+                        event = 'bd-burgershot:client:storeGarage',
+                        icon = 'fa-solid fa-square-parking',
+                        label = 'Store Vehicle',
+                        groups = {
+                            Config.Jobname
+                        },
+                    }
+                })
+        elseif playerGrade >= 4 then
+            exports.ox_target:addLocalEntity(BurgershotGaragePed, {
+                    {
+                        name = 'burgershot_garageped',
+                        event = 'bd-burgershot:client:garageMenu2',
+                        icon = 'fa-solid fa-warehouse',
+                        label = 'Garage',
+                        groups = {
+                            Config.Jobname
+                        },
+                    },
+                    {
+                        name = 'burgershot_storegarage',
+                        event = 'bd-burgershot:client:storeGarage',
+                        icon = 'fa-solid fa-square-parking',
+                        label = 'Store Vehicle',
+                        groups = {
+                            Config.Jobname
+                        },
+                    }
+                })
+        end
     end
     LocalNPCs[index].BurgershotGaragePed = BurgershotGaragePed
 end
@@ -146,10 +213,10 @@ CreateThread(function()
     DecorRegister("t_vehicle", 1)
 end)
 
-if Config.InventorySystem == 'ox' then
+if Config.TargetSystem == 'ox' then
     ---- | SETTING THE CLOCK IN/OUT TARGET | -----
     exports.ox_target:addBoxZone({
-        coords = vector4(-1192.99, -898.32, 15.16, 122.6),
+        coords = vector4(-1193.03, -898.63, 13.99, 31.42),
         size = vec3(1, 1, 1),
         rotation = 45,
         debug = drawZones,
@@ -168,7 +235,7 @@ if Config.InventorySystem == 'ox' then
     RegisterNetEvent('bd-burgershot:client:ToggleDuty', function()
         TriggerServerEvent("QBCore:ToggleDuty")
     end)
-elseif Config.InventorySystem == 'qb' then
+elseif Config.TargetSystem == 'qb' then
     ---- | SETTING THE CLOCK IN/OUT TARGET | -----
     exports['qb-target']:AddBoxZone("BurgershotClock", vector3(-1192.99, -898.32, 15.16), 1.9, 1.9, {
         name = "BurgershotClock",

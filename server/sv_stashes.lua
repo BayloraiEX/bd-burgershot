@@ -3,28 +3,28 @@ local ox_inventory = exports.ox_inventory
 
 if Config.InventorySystem == 'ox' then
     -- TRAY 1 --
-    RegisterNetEvent('ox:burgershotTray1', function()
-        ox_inventory:RegisterStash('burgershotTray1', 'Counter', 5, 5000, true)
+    RegisterNetEvent('ox:bfrontTray1', function()
+        ox_inventory:RegisterStash('bfrontTray1', 'Counter', 5, 5000, true)
     end)
     -- TRAY 2 --
-    RegisterNetEvent('ox:burgershotTray2', function()
-        ox_inventory:RegisterStash('burgershotTray2', 'Counter', 5, 5000, true)
+    RegisterNetEvent('ox:bfrontTray2', function()
+        ox_inventory:RegisterStash('bfrontTray2', 'Counter', 5, 5000, true)
     end)
     -- TRAY 3 --
-    RegisterNetEvent('ox:burgershotTray3', function()
-        ox_inventory:RegisterStash('burgershotTray3', 'Tray', 5, 5000, true)
+    RegisterNetEvent('ox:bfrontTray3', function()
+        ox_inventory:RegisterStash('bfrontTray3', 'Tray', 5, 5000, true)
     end)
     -- FRIDGE --
-    RegisterNetEvent('ox:burgershotFridge', function()
-        ox_inventory:RegisterStash('burgershotFridge', 'Fridge', 50, 750000, true)
+    RegisterNetEvent('ox:bjobFridge', function()
+        ox_inventory:RegisterStash('bjobFridge', 'Fridge', 50, 750000, true)
     end)
     -- HEATER --
-    RegisterNetEvent('ox:burgershotHeater', function()
-        ox_inventory:RegisterStash('burgershotHeater', 'Heater', 25, 250000, true)
+    RegisterNetEvent('ox:bjobHeater', function()
+        ox_inventory:RegisterStash('bjobHeater', 'Heater', 25, 250000, true)
     end)
     -- STORAGE --
-    RegisterNetEvent('ox:burgershotStorage', function()
-        ox_inventory:RegisterStash('burgershotStorage', 'Storage', 75, 1000000, true)
+    RegisterNetEvent('ox:bbackStorage', function()
+        ox_inventory:RegisterStash('bbackStorage', 'Storage', 75, 1000000, true)
     end)
 elseif Config.InventorySystem == 'qb' then
     -- TRAY 1 --

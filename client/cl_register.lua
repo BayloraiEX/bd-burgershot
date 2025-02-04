@@ -1,61 +1,116 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-exports['qb-target']:AddBoxZone("BurgershotRegister", vector3(-1196.27, -891.53, 14.0), 0.9, 0.9, {
-    name = "BurgershotRegister",
-    heading = 335.05,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:Bill",
-            icon = "fa-solid fa-cash-register",
-            label = "Register",
-            job = Config.Jobname,
+if Config.TargetSystem == 'qb' then
+    -- REGISTER 1 --
+    exports['qb-target']:AddBoxZone("BurgershotRegister", vector3(-1196.27, -891.53, 14.0), 0.9, 0.9, {
+        name = "BurgershotRegister",
+        heading = 335.05,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:Bill",
+                icon = "fa-solid fa-cash-register",
+                label = "Register",
+                job = Config.Jobname,
+            },
         },
-    },
-    distance = 2.5
-})
-
-exports['qb-target']:AddBoxZone("BurgershotRegister2", vector3(-1194.92, -893.48, 14.0), 0.9, 0.9, {
-    name = "BurgershotRegister",
-    heading = 335.05,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:Bill",
-            icon = "fa-solid fa-cash-register",
-            label = "Register",
-            job = Config.Jobname,
+        distance = 2.5
+    })
+    -- REGISTER 2 --
+    exports['qb-target']:AddBoxZone("BurgershotRegister2", vector3(-1194.92, -893.48, 14.0), 0.9, 0.9, {
+        name = "BurgershotRegister",
+        heading = 335.05,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:Bill",
+                icon = "fa-solid fa-cash-register",
+                label = "Register",
+                job = Config.Jobname,
+            },
         },
-    },
-    distance = 2.5
-})
-
-exports['qb-target']:AddBoxZone("BurgershotRegister3", vector3(-1193.3, -895.05, 14.0), 0.9, 0.9, {
-    name = "BurgershotRegister",
-    heading = 335.05,
-    debugPoly = false,
-    minZ = 14.0 - 2,
-    maxZ = 14.0 + 2,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "bd-burgershot:client:Bill",
-            icon = "fa-solid fa-cash-register",
-            label = "Register",
-            job = Config.Jobname,
+        distance = 2.5
+    })
+    -- REGISTER 3 --
+    exports['qb-target']:AddBoxZone("BurgershotRegister3", vector3(-1193.3, -895.05, 14.0), 0.9, 0.9, {
+        name = "BurgershotRegister",
+        heading = 335.05,
+        debugPoly = false,
+        minZ = 14.0 - 2,
+        maxZ = 14.0 + 2,
+    }, {
+        options = {
+            {
+                type = "client",
+                event = "bd-burgershot:client:Bill",
+                icon = "fa-solid fa-cash-register",
+                label = "Register",
+                job = Config.Jobname,
+            },
         },
-    },
-    distance = 2.5
-})
+        distance = 2.5
+    })
+elseif Config.TargetSystem == 'ox' then
+    -- REGISTER 1 --
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1196.16, -891.37, 14.06, 305.83),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		options = {
+			{
+				name = 'burgershot_register1',
+				event = 'bd-burgershot:client:Bill',
+				icon = 'fa-solid fa-cash-register',
+				label = 'Register',
+				groups = {
+					Config.Jobname
+				},
+			},
+		}
+	})
+    -- REGISTER 2 --
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1194.59, -893.21, 14.0, 305.16),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		options = {
+			{
+				name = 'burgershot_register2',
+				event = 'bd-burgershot:client:Bill',
+				icon = 'fa-solid fa-cash-register',
+				label = 'Register',
+				groups = {
+					Config.Jobname
+				},
+			},
+		}
+	})
+    -- REGISTER 3 --
+    exports.ox_target:addBoxZone({
+		coords = vector4(-1193.22, -895.13, 14.0, 34.0),
+		size = vec3(1, 1, 1),
+		rotation = 45,
+		options = {
+			{
+				name = 'burgershot_register3',
+				event = 'bd-burgershot:client:Bill',
+				icon = 'fa-solid fa-cash-register',
+				label = 'Register',
+				groups = {
+					Config.Jobname
+				},
+			},
+		}
+	})
+end
 
 RegisterNetEvent("bd-burgershot:client:Bill", function()
     local bill = lib.inputDialog('Burgershot Register', {
