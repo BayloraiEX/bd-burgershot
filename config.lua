@@ -11,7 +11,8 @@
                               |_|                             
 --]] 
 Config = {}
-Config.InventorySystem = 'ox' -- Supports 'qb' & 'ox'
+Config.InventorySystem = 'qb' -- Supports 'qb' & 'ox'
+Config.TargetSystem = 'ox' -- Supports 'qb' & 'ox'
 
 Config.Jobname = 'burgershot'
 
@@ -40,7 +41,7 @@ Config.CarVehicle = 'stalion2'
 Config.BurgershotDeliveryPed = {
   {
     BurgershotDeliveryPedModel = 'a_m_y_business_03',
-    BurgershotDeliveryPedLocation = vector4(-1191.23, -897.83, 13.0, 121.87),
+    BurgershotDeliveryPedLocation = vector4(-1195.8, -901.62, 13.0, 41.53),
     BurgershotDeliveryRenderDistance = 5,
   }
 }
