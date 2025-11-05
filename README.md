@@ -67,6 +67,214 @@ burgershot = {
     bs_vanillashake              = { name = 'bs_vanillashake', label = 'Vanilla Milkshake', weight = 10, type = 'item', image = 'bs_vanillashake.png', unique = false, useable = true, shouldClose = true},
 ```
 
+# For Ox_inventory *
+```
+['bs_vanillashake'] = {
+        label = 'BS Vanilla Shake',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_torpedo'] = {
+        label = 'BS Torpedo Sandwich',
+        weight = 10,
+        client = {
+			status = { hunger = 600000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_strawberryshake'] = {
+        label = 'BS Strawberry Shake',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_sprunk'] = {
+        label = 'BS Sprunk',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_rimjob'] = {
+        label = 'BS Rimjob',
+        weight = 10,
+        client = {
+			status = { hunger = 300000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_orangotang'] = {
+        label = 'BS Orang-O-Tang',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_onionrings'] = {
+        label = 'BS Onion Rings',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_nuggets'] = {
+        label = 'BS Chicken Nuggys',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_moneyshot'] = {
+        label = 'BS Moneyshot Burger',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_meatfree'] = {
+        label = 'BS Meat Free Burger',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_heartstopper'] = {
+        label = 'BS Heartstopper Burger',
+        weight = 10,
+        client = {
+			status = { hunger = 700000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_fries'] = {
+        label = 'BS Fries',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_ecola1'] = {
+        label = 'BS Ecola Light',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_ecola'] = {
+        label = 'BS Ecola',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_creampie'] = {
+        label = 'BS Creampie',
+        weight = 10,
+        client = {
+			status = { hunger = 300000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_cookiesncreamshake'] = {
+        label = 'BS Cookies N Cream Shake',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_coffee'] = {
+        label = 'BS Coffee',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_chocolateshake'] = {
+        label = 'BS Chocolate Shake',
+        weight = 10,
+        client = {
+			status = { thirst = 750000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+			prop = { model = `prop_ld_can_01`, pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_chickenwrap'] = {
+        label = 'BS Chicken Wrap',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_bleeder'] = {
+        label = 'BS Bleeder Burger',
+        weight = 10,
+        client = {
+			status = { hunger = 500000 },
+			anim = { dict = 'mp_player_intdrink', clip = 'loop' },
+			prop = { model = 'v_ret_ml_chips4', pos = vec3(0.01, 0.01, 0.06), rot = vec3(5.0, 5.0, -180.5) },
+			usetime = 2500,
+		}
+    },
+    ['bs_bag'] = {
+        label = 'BS To-Go Bag',
+        weight = 10,
+    },
+```
+
 # SMALLRESOURCES
 - Copy and paste into your qb-smallresources --> config.lua
 ```
@@ -110,3 +318,4 @@ eat = {
 - Copy and paste the sounds from the sounds folder into interact-sound --> client --> html --> sounds
 - Now this part isn't that important but there is a couple sounds that the default doesnt have that i added ( coffee pouring for example )
  - Ok now your actually done setting it all up, If you got any questions or concerns dont forget to join the discord above <3
+
