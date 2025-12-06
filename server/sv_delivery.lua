@@ -43,7 +43,7 @@ RegisterNetEvent('bd-burgershot:server:FinishDeliveryPay', function()
     local totalPay = math.random(Config.MinPay, Config.MaxPay) -- the amount you get inbetween the min and max set in config
     local PlayerPercent = Config.PlayerPercent -- setting the playerPercent to be whats in the config
     local playerTotal = totalPay*PlayerPercent/100 -- getting the % of the totalPay
-    local businessTotal = playerTotal-totalPay -- getting the business amount after removing the playerPercent
+    local businessTotal = totalPay-playerTotal -- getting the business amount after removing the playerPercent
 
     if Config.PayWorker == true then
         exports['qb-banking']:AddMoney('burgershot', businessTotal, 'Delivery-Work')
@@ -52,3 +52,4 @@ RegisterNetEvent('bd-burgershot:server:FinishDeliveryPay', function()
         exports['qb-banking']:AddMoney('burgershot', businessTotal, 'Delivery-Tip')
     end
 end)
+
