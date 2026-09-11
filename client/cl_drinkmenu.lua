@@ -1,253 +1,100 @@
-local QBCore = exports['qb-core']:GetCoreObject()
+local DrinkById = {}
+for _, drink in ipairs(Config.Drinks) do
+    DrinkById[drink.id] = drink
+end
 
-if Config.TargetSystem == 'ox' then
-    ----- | CREATING DRINK MENU TARGET | -----
-    exports.ox_target:addBoxZone({
-		coords = vector4(-1199.64, -895.56, 14.13, 271.33),
-		size = vec3(1, 1, 1),
-		rotation = 45,
-		debug = drawZones,
-		options = {
-			{
-				name = 'burgershot_drinkmenu',
-				event = 'bd-burgershot:client:OpenDrinkMenu',
-				icon = 'fa-solid fa-equals',
-				label = 'Drink Menu',
-                groups = {
-                    Config.Jobname
-                },
-			},
-		}
-	})
-elseif Config.TargetSystem == 'qb' then
-    ----- | CREATING DRINK MENU TARGET | -----
-    exports['qb-target']:AddBoxZone("BurgershotDrinkMenu", vector3(-1199.44, -895.52, 14.0), 0.9, 0.9, {
-        name = "BurgershotDrinkMenu",
-        heading = 300.45,
-        debugPoly = false,
-        minZ = 14.0 - 2,
-        maxZ = 14.0 + 2,
-    }, {
-        options = {
-            {
-                type = "client",
-                event = "bd-burgershot:client:OpenDrinkMenu",
-                icon = "fa-solid fa-faucet",
-                label = "Drink Menu",
-                job = Config.Jobname
-            },
+local function Notify(description)
+    lib.notify({
+        id = 'burger_shot',
+        title = 'Burgershot',
+        description = description,
+        showDuration = false,
+        position = 'top',
+        style = {
+            backgroundColor = '#141517',
+            color = '#F08080',
+            ['.description'] = { color = '#909296' }
         },
-        distance = 1.5
+        icon = 'burger',
+        iconColor = '#F08080'
     })
 end
+
+local function DescribeDrink(drink)
+    local base = ('%s %dx %s'):format(drink.verb == 'made' and 'Make' or 'Pour', drink.amount, drink.label)
+
+    local ingredients = Config.DrinkIngredients and (Config.DrinkIngredients[drink.id] or Config.DrinkIngredients[drink.category])
+    if not ingredients then return base end
+
+    local parts = {}
+    for _, ing in ipairs(ingredients) do
+        parts[#parts + 1] = ('%dx %s'):format(ing.amount, ing.item)
+    end
+
+    return ('%s (Needs: %s)'):format(base, table.concat(parts, ', '))
+end
+
+local Categories = {
+    { id = 'softdrinks', title = 'Soft Drinks', description = 'All our soft drink types',                          icon = 'faucet-drip' },
+    { id = 'coffee',     title = 'Coffee',      description = 'All our coffee types',                              icon = 'mug-hot' },
+    { id = 'milkshakes', title = 'Milkshakes',  description = 'My milkshakes bring all the boys/girls to the yard', icon = 'ice-cream' },
+}
+
+local rootOptions = {}
+for _, cat in ipairs(Categories) do
+    local options = {}
+    for _, drink in ipairs(Config.Drinks) do
+        if drink.category == cat.id then
+            options[#options + 1] = {
+                title = drink.label,
+                description = DescribeDrink(drink),
+                event = 'bd-burgershot:client:MakeDrink',
+                args = drink.id,
+                icon = cat.icon,
+                iconColor = '#EC213A',
+            }
+        end
+    end
+
+    lib.registerContext({
+        id = 'burgershot_' .. cat.id,
+        title = cat.title,
+        menu = 'burgershot_drinks',
+        options = options,
+    })
+
+    rootOptions[#rootOptions + 1] = {
+        title = cat.title,
+        description = cat.description,
+        menu = 'burgershot_' .. cat.id,
+    }
+end
+
 lib.registerContext({
     id = 'burgershot_drinks',
     title = 'Drink Menu',
-    options = {
-        {
-            title = 'Soft Drinks',
-            description = 'All our soft drink types',
-            menu = 'burgershot_softdrinks',
-        },
-        {
-            title = 'Coffee',
-            description = 'All our coffee types',
-            menu = 'burgershot_coffee',
-        },
-        {
-            title = 'Milkshakes',
-            description = 'My milkshakes bring all the boys/girls to the yard',
-            menu = 'burgershot_milkshakes',
-        },
-    },
+    options = rootOptions,
 })
+
 RegisterNetEvent('bd-burgershot:client:OpenDrinkMenu', function()
     lib.showContext('burgershot_drinks')
 end)
-lib.registerContext({
-    id = 'burgershot_softdrinks',
-    title = 'Soft Drinks',
-    menu = 'burgershot_drinks',
-    options = {
-        {
-            title = 'Ecola',
-            description = 'Pour 2x Ecola',
-            event = 'bd-burgershot:client:MakeEcola',
-            icon = 'faucet-drip',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Ecola Light',
-            description = 'Pour 2x Ecola Light',
-            event = 'bd-burgershot:client:MakeEcolaLight',
-            icon = 'faucet-drip',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Sprunk',
-            description = 'Pour 2x Sprunk',
-            event = 'bd-burgershot:client:MakeSprunk',
-            icon = 'faucet-drip',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Orang-O-Tang',
-            description = 'Pour 2x Orang-O-Tang',
-            event = 'bd-burgershot:client:MakeOrangoTang',
-            icon = 'faucet-drip',
-            iconColor = '#EC213A'
-        },
-    },
-})
-lib.registerContext({
-    id = 'burgershot_coffee',
-    title = 'Coffee',
-    menu = 'burgershot_drinks',
-    options = {
-        {
-            title = 'Coffee',
-            description = 'Pour 2x Coffee',
-            event = 'bd-burgershot:client:MakeCoffee',
-            icon = 'mug-hot',
-            iconColor = '#EC213A'
-        },
-    },
-})
-lib.registerContext({
-    id = 'burgershot_milkshakes',
-    title = 'Milkshakes',
-    menu = 'burgershot_drinks',
-    options = {
-        {
-            title = 'Vanilla Milkshake',
-            description = 'Make 2x Vanilla Milkshake',
-            event = 'bd-burgershot:client:MakeVanillaShake',
-            icon = 'ice-cream',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Chocolate Milkshake',
-            description = 'Make 2x Chocolate Milkshake',
-            event = 'bd-burgershot:client:MakeChocolateShake',
-            icon = 'ice-cream',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Strawberry Milkshake',
-            description = 'Make 2x Strawberry Milkshake',
-            event = 'bd-burgershot:client:MakeStrawberryShake',
-            icon = 'ice-cream',
-            iconColor = '#EC213A'
-        },
-        {
-            title = 'Cookies N Cream Milkshake',
-            description = 'Make 2x Cookies N Cream Milkshake',
-            event = 'bd-burgershot:client:MakeCookiesnCreamShake',
-            icon = 'ice-cream',
-            iconColor = '#EC213A'
-        },
-    },
-})
-------|---------------------|------
------ | CREATING THE DRINKS | -----
-------|---------------------|------
-RegisterNetEvent('bd-burgershot:client:MakeEcola', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "watermachine", 0.2)
-    if lib.progressCircle({
-        duration = 2000, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the drink pour )
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeEcola')
-    else
-    end
-end)
 
-RegisterNetEvent('bd-burgershot:client:MakeEcolaLight', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "watermachine", 0.2)
-    if lib.progressCircle({
-        duration = 2000,
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeEcolaLight')
-    else
-    end
-end)
+RegisterNetEvent('bd-burgershot:client:MakeDrink', function(drinkId)
+    local drink = DrinkById[drinkId]
+    if not drink then return end
 
-RegisterNetEvent('bd-burgershot:client:MakeSprunk', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "watermachine", 0.2)
-    if lib.progressCircle({
-        duration = 2000,
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeSprunk')
-    else
+    local canMake, missingMsg = lib.callback.await('bd-burgershot:server:CanMakeDrink', false, drinkId)
+    if not canMake then
+        Notify(missingMsg)
+        return
     end
-end)
 
-RegisterNetEvent('bd-burgershot:client:MakeOrangoTang', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "watermachine", 0.2)
-    if lib.progressCircle({
-        duration = 2000,
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeOrangoTang')
-    else
-    end
-end)
+    -- Note: if you change duration the sound may play longer than the bar
+    TriggerServerEvent('InteractSound_SV:PlayOnSource', drink.sound, 0.2)
 
--- COFFEE --
-RegisterNetEvent('bd-burgershot:client:MakeCoffee', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "coffee_pour", 0.2)
-    if lib.progressCircle({
-        duration = 1500, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the coffee pour )
+    local finished = lib.progressCircle({
+        duration = drink.duration,
         position = 'bottom',
         useWhileDead = false,
         canCancel = true,
@@ -259,102 +106,11 @@ RegisterNetEvent('bd-burgershot:client:MakeCoffee', function()
         anim = {
             dict = 'mini@repair',
             clip = 'fixing_a_player',
-            scenario = 'mini@repair'
+            scenario = 'mini@repair',
         },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeCoffee')
-    else
-    end
-end)
--- MILKSHAKES --
-RegisterNetEvent('bd-burgershot:client:MakeVanillaShake', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "milkshake_machine", 0.2)
-    if lib.progressCircle({
-        duration = 1500, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the coffee pour )
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeVanillaShake')
-    else
-    end
-end)
+    })
 
-RegisterNetEvent('bd-burgershot:client:MakeStrawberryShake', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "milkshake_machine", 0.2)
-    if lib.progressCircle({
-        duration = 1500, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the coffee pour )
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeStrawberryShake')
-    else
-    end
-end)
-
-RegisterNetEvent('bd-burgershot:client:MakeChocolateShake', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "milkshake_machine", 0.2)
-    if lib.progressCircle({
-        duration = 1500, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the coffee pour )
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeChocolateShake')
-    else
-    end
-end)
-
-RegisterNetEvent('bd-burgershot:client:MakeCookiesnCreamShake', function()
-    TriggerServerEvent("InteractSound_SV:PlayOnSource", "milkshake_machine", 0.2)
-    if lib.progressCircle({
-        duration = 1500, -- If you change this the sound will play longer then the bar ( can just comment the sound out if you dont care bout hearing the coffee pour )
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true,
-        },
-        anim = {
-            dict = 'mini@repair',
-            clip = 'fixing_a_player',
-            scenario = 'mini@repair'
-        },
-    }) then
-        TriggerServerEvent('bd-burgershot:server:MakeCookiesnCreamShake')
-    else
+    if finished then
+        TriggerServerEvent('bd-burgershot:server:MakeDrink', drinkId)
     end
 end)
