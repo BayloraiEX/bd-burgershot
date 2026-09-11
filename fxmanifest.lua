@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 author 'Baylorai Development'
 description 'QBCore Burgershot Job using ox_lib'
-version '0.1.1'
+version '0.2.0'
 
 shared_scripts {
 	'@ox_lib/init.lua',
@@ -16,7 +16,14 @@ client_script {
 
 server_script 'server/*.lua'
 
+ui_page 'ui/kiosk.html'
+
 files {
+	'ui/kiosk.html',
+	'ui/kiosk.css',
+	'ui/kiosk.js',
+	'ui/bossmenu.css',
+	'ui/bossmenu.js',
 	'data/**/carvariations.meta',
 	'data/**/handling.meta',
 	'data/**/vehicles.meta',
