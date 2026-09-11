@@ -1,55 +1,63 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local ox_inventory = exports.ox_inventory
 
-local src = source
-local Player = QBCore.Functions.GetPlayer(src)
-local totalbags = math.random(Config.MinBag, Config.MaxBag)
+local activeDeliveries = {}
 
-if Config.InventorySystem == 'ox' then
-    RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        
-        ox_inventory:AddItem(src, 'bs_bag', totalbags)
-    end)
-    
-    RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-    
-        ox_inventory:RemoveItem(src, 'bs_bag', totalbags, false)
-    end)
-elseif Config.InventorySystem == 'qb' then
-    RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        
-        exports['qb-inventory']:AddItem(src, 'bs_bag', totalbags, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'add', totalbags)
-    end)
-
-    RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-    
-        exports['qb-inventory']:RemoveItem(src, 'bs_bag', totalbags, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bag'], 'remove')
-    end)
+local function AddBags(src, amount)
+    if Config.InventorySystem == 'ox' then
+        exports.ox_inventory:AddItem(src, 'bs_bag', amount)
+    elseif Config.InventorySystem == 'qb' then
+        exports['qb-inventory']:AddItem(src, 'bs_bag', amount, false, false)
+        TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bs_bag'], 'add', amount)
+    end
 end
 
-RegisterNetEvent('bd-burgershot:server:FinishDeliveryPay', function()
+local function RemoveBags(src, amount)
+    if Config.InventorySystem == 'ox' then
+        exports.ox_inventory:RemoveItem(src, 'bs_bag', amount, false)
+    elseif Config.InventorySystem == 'qb' then
+        exports['qb-inventory']:RemoveItem(src, 'bs_bag', amount, false)
+        TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items['bs_bag'], 'remove')
+    end
+end
+
+RegisterNetEvent('bd-burgershot:server:RecieveBags', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    local totalPay = math.random(Config.MinPay, Config.MaxPay) -- the amount you get inbetween the min and max set in config
-    local PlayerPercent = Config.PlayerPercent -- setting the playerPercent to be whats in the config
-    local playerTotal = totalPay*PlayerPercent/100 -- getting the % of the totalPay
-    local businessTotal = totalPay-playerTotal -- getting the business amount after removing the playerPercent
+    if not Player then return end
+    if Player.PlayerData.job.name ~= Config.Jobname then return end
+    if activeDeliveries[src] then return end
 
-    if Config.PayWorker == true then
-        exports['qb-banking']:AddMoney('burgershot', businessTotal, 'Delivery-Work')
+    local bags = math.random(Config.MinBag, Config.MaxBag)
+    activeDeliveries[src] = bags
+    AddBags(src, bags)
+end)
+
+RegisterNetEvent('bd-burgershot:server:FinishDelivery', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if Player.PlayerData.job.name ~= Config.Jobname then return end
+
+    local bags = activeDeliveries[src]
+    if not bags then return end
+    activeDeliveries[src] = nil
+
+    RemoveBags(src, bags)
+
+    local totalPay = math.random(Config.MinPay, Config.MaxPay)
+
+    if Config.PayWorker then
+        local playerTotal = math.floor(totalPay * Config.PlayerPercent / 100)
+        local businessTotal = totalPay - playerTotal
         Player.Functions.AddMoney('bank', playerTotal, 'Delivery-Tip')
-    elseif Config.PayWorker == false then
-        exports['qb-banking']:AddMoney('burgershot', businessTotal, 'Delivery-Tip')
+        exports['nfs-billing']:depositSociety(Config.SocietyAccount, businessTotal)
+        exports['bd-burgershot']:LogBossTransaction('in', businessTotal, 'Delivery payout')
+    else
+        exports['nfs-billing']:depositSociety(Config.SocietyAccount, totalPay)
+        exports['bd-burgershot']:LogBossTransaction('in', totalPay, 'Delivery payout')
     end
 end)
 
+AddEventHandler('playerDropped', function()
+    activeDeliveries[source] = nil
+end)

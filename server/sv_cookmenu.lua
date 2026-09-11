@@ -1,523 +1,106 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local ox_inventory = exports.ox_inventory
 
-if Config.InventorySystem == 'ox' then
-    -- MAKE BLEEDER --
-    RegisterNetEvent('bd-burgershot:server:MakeBleeder', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_bleeder', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Bleeder Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE MONEYSHOT --
-    RegisterNetEvent('bd-burgershot:server:MakeMoneyshot', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_moneyshot', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Moneyshot Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE HEARTSTOPPER --
-    RegisterNetEvent('bd-burgershot:server:MakeHeartstopper', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_heartstopper', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Heartstopper Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE TORPEDO --
-    RegisterNetEvent('bd-burgershot:server:MakeTorpedo', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_torpedo', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Torpedo Sandwiches',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE NEETFREE BURGER --
-    RegisterNetEvent('bd-burgershot:server:MakeMeatFree', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_meatfree', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Meatfree Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE WRAP --
-    RegisterNetEvent('bd-burgershot:server:MakeChickenWrap', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_chickenwrap', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Chicken Wraps',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE FRIES --
-    RegisterNetEvent('bd-burgershot:server:MakeFries', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_fries', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Fries',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE ONION RINGS --
-    RegisterNetEvent('bd-burgershot:server:MakeOnionRings', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_onionrings', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Onion Rings',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE NUGGETS --
-    RegisterNetEvent('bd-burgershot:server:MakeChickenNuggets', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_nuggets', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Chicken Nuggets',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE CREAMPIE --
-    RegisterNetEvent('bd-burgershot:server:MakeCreamPie', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_creampie', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have baked 2x Apple Cream Pies',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE RIMJOB --
-    RegisterNetEvent('bd-burgershot:server:MakeRimJob', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        ox_inventory:AddItem(src, 'bs_rimjob', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have baked 2x Rim Jobs',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-elseif Config.InventorySystem == 'qb' then
-    -- MAKE BLEEDER --
-    RegisterNetEvent('bd-burgershot:server:MakeBleeder', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_bleeder', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_bleeder'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Bleeder Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE MONEYSHOT --
-    RegisterNetEvent('bd-burgershot:server:MakeMoneyshot', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_moneyshot', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_moneyshot'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Moneyshot Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE HEARTSTOPPER --
-    RegisterNetEvent('bd-burgershot:server:MakeHeartstopper', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_heartstopper', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_heartstopper'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Heartstopper Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE TORPEDO --
-    RegisterNetEvent('bd-burgershot:server:MakeTorpedo', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_torpedo', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_torpedo'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Torpedo Sandwiches',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE NEETFREE BURGER --
-    RegisterNetEvent('bd-burgershot:server:MakeMeatFree', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_meatfree', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_meatfree'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Meatfree Burgers',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE WRAP --
-    RegisterNetEvent('bd-burgershot:server:MakeWrap', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_chickenwrap', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_chickenwrap'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Chicken Wraps',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE FRIES --
-    RegisterNetEvent('bd-burgershot:server:MakeFries', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_fries', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_fries'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Fries',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE ONION RINGS --
-    RegisterNetEvent('bd-burgershot:server:MakeOnionRings', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_onionrings', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_onionrings'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Onion Rings',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE NUGGETS --
-    RegisterNetEvent('bd-burgershot:server:MakeChickenNuggets', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_nuggets', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_nuggets'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have grilled 2x Chicken Nuggets',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE CREAMPIE --
-    RegisterNetEvent('bd-burgershot:server:MakeCreamPie', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_creampie', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_creampie'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have baked 2x Apple Cream Pies',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
-    -- MAKE RIMJOB --
-    RegisterNetEvent('bd-burgershot:server:MakeRimJob', function()
-        local src = source
-        local Player = QBCore.Functions.GetPlayer(src)
-        if not Player then return end
-        exports['qb-inventory']:AddItem(src, 'bs_rimjob', 2, false, false)
-        TriggerClientEvent('qb-inventory:client:ItemBox', source, QBCore.Shared.Items['bs_rimjob'], 'add', 2)
-        lib.notify(source, {
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You have baked 2x Rim Jobs',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end)
+local function Notify(src, description, color)
+    lib.notify(src, {
+        id = 'burger_shot',
+        title = 'Burgershot',
+        description = description,
+        showDuration = false,
+        position = 'top',
+        style = {
+            backgroundColor = '#141517',
+            color = color or '#F08080',
+            ['.description'] = {
+              color = '#909296'
+            }
+        },
+        icon = 'burger',
+        iconColor = color or '#F08080'
+    })
 end
+
+local function GetItemLabel(item)
+    if Config.InventorySystem == 'ox' then
+        local data = ox_inventory:Items(item)
+        return data and data.label or item
+    else
+        local data = QBCore.Shared.Items[item]
+        return data and data.label or item
+    end
+end
+
+local function GetItemCount(src, Player, item)
+    if Config.InventorySystem == 'ox' then
+        return ox_inventory:GetItemCount(src, item)
+    else
+        local invItem = Player.Functions.GetItemByName(item)
+        return invItem and invItem.amount or 0
+    end
+end
+
+local function GetMissingIngredients(src, Player, recipe)
+    local missing = {}
+    for _, ing in ipairs(recipe.ingredients) do
+        local count = GetItemCount(src, Player, ing.item)
+        if count < ing.amount then
+            missing[#missing + 1] = ('%dx %s (have %d)'):format(ing.amount, GetItemLabel(ing.item), count)
+        end
+    end
+
+    if #missing == 0 then
+        return true, nil
+    end
+
+    return false, 'You are missing: ' .. table.concat(missing, ', ')
+end
+
+lib.callback.register('bd-burgershot:server:CanCook', function(source, product)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return false, 'Something went wrong.' end
+    if Player.PlayerData.job.name ~= Config.Jobname then return false, 'You are not on duty.' end
+
+    local recipe = Config.Recipes[product]
+    if not recipe then return false, 'That item does not exist.' end
+
+    return GetMissingIngredients(source, Player, recipe)
+end)
+
+RegisterNetEvent('bd-burgershot:server:FinishCooking', function(product, success)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if Player.PlayerData.job.name ~= Config.Jobname then return end
+
+    local recipe = Config.Recipes[product]
+    if not recipe then return end
+
+    local canCook, missingMsg = GetMissingIngredients(src, Player, recipe)
+    if not canCook then
+        Notify(src, missingMsg)
+        return
+    end
+
+    for _, ing in ipairs(recipe.ingredients) do
+        if Config.InventorySystem == 'ox' then
+            ox_inventory:RemoveItem(src, ing.item, ing.amount)
+        else
+            Player.Functions.RemoveItem(ing.item, ing.amount)
+            TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items[ing.item], 'remove', ing.amount)
+        end
+    end
+
+    if not success then
+        Notify(src, ('You burnt the %s and had to throw it out.'):format(recipe.label))
+        return
+    end
+
+    if Config.InventorySystem == 'ox' then
+        ox_inventory:AddItem(src, product, recipe.amount)
+    else
+        Player.Functions.AddItem(product, recipe.amount, false, false)
+        TriggerClientEvent('qb-inventory:client:ItemBox', src, QBCore.Shared.Items[product], 'add', recipe.amount)
+    end
+
+    Notify(src, ('You have made %dx %s'):format(recipe.amount, recipe.label), '#8fd694')
+end)
