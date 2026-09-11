@@ -3,7 +3,25 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local deliveryBlip = nil
 local inJob = false
 
------ | CREATING MODEL SPAWN | -----
+local function Notify(description, color)
+    lib.notify({
+        id = 'burger_shot',
+        title = 'Burgershot',
+        description = description,
+        showDuration = false,
+        position = 'top',
+        style = {
+            backgroundColor = '#141517',
+            color = color or '#F08080',
+            ['.description'] = {
+              color = '#909296'
+            }
+        },
+        icon = 'burger',
+        iconColor = color or '#F08080'
+    })
+end
+
 local function FetchModel(model)
     RequestModel(GetHashKey(model))
     while not HasModelLoaded(model) do
@@ -13,147 +31,103 @@ end
 
 local LocalNPCs = {}
 
-local function GetLocalNPC(index)
-    return LocalNPCs[index]
+local function DestroyLocalNPC(index)
+    if LocalNPCs[index] then
+        DeleteEntity(LocalNPCs[index].ped)
+        LocalNPCs[index] = nil
+    end
 end
 
 local function CreateLocalNPC(index)
-    if (LocalNPCs[index]) then
+    if LocalNPCs[index] then
         DestroyLocalNPC(index)
     end
 
-    LocalNPCs[index] = {}
     local cfg = Config.BurgershotDeliveryPed[index]
-
     FetchModel(cfg.BurgershotDeliveryPedModel)
 
-    ----- | CREATING PED | -----
-    local BurgershotDeliveryPed = CreatePed(1, cfg.BurgershotDeliveryPedModel, cfg.BurgershotDeliveryPedLocation, false, true)
-    FreezeEntityPosition(BurgershotDeliveryPed, true)
-    SetEntityInvincible(BurgershotDeliveryPed, true)
-    SetBlockingOfNonTemporaryEvents(BurgershotDeliveryPed, true)
-    SetPedComponentVariation(BurgershotDeliveryPed, 3, 0, 0, 1)
-    SetPedComponentVariation(BurgershotDeliveryPed, 4, 0, 0, 1)
-    SetPedComponentVariation(BurgershotDeliveryPed, 6, 0, 0, 1)
-    SetPedComponentVariation(BurgershotDeliveryPed, 0, 1, 0, 1)
+    local ped = CreatePed(1, cfg.BurgershotDeliveryPedModel, cfg.BurgershotDeliveryPedLocation, false, true)
+    FreezeEntityPosition(ped, true)
+    SetEntityInvincible(ped, true)
+    SetBlockingOfNonTemporaryEvents(ped, true)
+    SetPedComponentVariation(ped, 3, 0, 0, 1)
+    SetPedComponentVariation(ped, 4, 0, 0, 1)
+    SetPedComponentVariation(ped, 6, 0, 0, 1)
+    SetPedComponentVariation(ped, 0, 1, 0, 1)
+
     if Config.TargetSystem == 'qb' then
-        ----- | CREATING TARGET FOR PED | -----
-        exports['qb-target']:AddTargetEntity(BurgershotDeliveryPed, {
+        exports['qb-target']:AddTargetEntity(ped, {
             options = {
                 {
-                    type = "client",
-                    event = "bd-burgershot:client:DeliveryStartAlert",
-                    icon = "fa-solid fa-truck-ramp-box",
-                    label = "Delivery Start",
-                    job = Config.Jobname
+                    type = 'client',
+                    event = 'bd-burgershot:client:DeliveryStartAlert',
+                    icon = 'fa-solid fa-truck-ramp-box',
+                    label = 'Delivery Start',
+                    job = Config.Jobname,
                 },
             },
             distance = 1.5,
         })
     elseif Config.TargetSystem == 'ox' then
-        exports.ox_target:addLocalEntity(BurgershotDeliveryPed, {
+        exports.ox_target:addLocalEntity(ped, {
             {
                 name = 'burgershot_delivery',
                 event = 'bd-burgershot:client:DeliveryStartAlert',
                 icon = 'fa-solid fa-truck-ramp-box',
                 label = 'Delivery Start',
-                groups = {
-                    Config.Jobname
-                },
-            }
+                groups = { Config.Jobname },
+            },
         })
     end
-    LocalNPCs[index].BurgershotDeliveryPed = BurgershotDeliveryPed
+
+    LocalNPCs[index] = { ped = ped }
 end
 
-local function DestroyLocalNPC(index)
-    if (LocalNPCs[index]) then
-        DeleteEntity(LocalNPCs[index].BurgershotDeliveryPed)
-        LocalNPCs[index] = nil
-    end
-end
-
------ | CHECKS IF PLAYER IS CERTAIN DISTANCE FROM PED MODEL | -----
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        local wait = 1000
-        local ped = PlayerPedId() 
-        local pcoords = GetEntityCoords(ped)
-        for i=1, 1 do 
+        local pcoords = GetEntityCoords(PlayerPedId())
+        for i = 1, #Config.BurgershotDeliveryPed do
             local cfg = Config.BurgershotDeliveryPed[i]
-            local coords = vector3(cfg.BurgershotDeliveryPedLocation)
-            local dist = #(pcoords - coords)
-            local BurgershotDeliveryPed = GetLocalNPC(i)
-            if dist < cfg.BurgershotDeliveryRenderDistance then 
-                if (GetLocalNPC(i) == nill) then 
-                  CreateLocalNPC(i)
-                end 
-            else 
+            local dist = #(pcoords - vector3(cfg.BurgershotDeliveryPedLocation.x, cfg.BurgershotDeliveryPedLocation.y, cfg.BurgershotDeliveryPedLocation.z))
+            if dist < cfg.BurgershotDeliveryRenderDistance then
+                if not LocalNPCs[i] then
+                    CreateLocalNPC(i)
+                end
+            else
                 DestroyLocalNPC(i)
-            end 
+            end
         end
-      Wait(wait)
+        Wait(1000)
     end
 end)
 
------ | CREATING ALERT MENU | -----
 RegisterNetEvent('bd-burgershot:client:DeliveryStartAlert', function()
-    if inJob == false then
-        local burgeralert = lib.alertDialog({
-            header = 'Burgershot Delivery',
-            content = 'Are you sure you would like to start a delivery?',
-            centered = true,
-            size = 'xs',
-            cancel = true,
-            labels = {
-                cancel = 'No',
-                confirm = 'Yes',
-            },
-        })
-        if burgeralert == 'confirm'  then
-            TriggerEvent('bd-burgershot:client:RecieveDelivery')
-        elseif burgeralert == 'cancel' then
-            lib.notify({
-                id = 'burger_shot',
-                title = 'Burgershot',
-                description = 'You declined the delivery',
-                showDuration = false,
-                position = 'top',
-                style = {
-                    backgroundColor = '#141517',
-                    color = '#F08080',
-                    ['.description'] = {
-                      color = '#909296'
-                    }
-                },
-                icon = 'burger',
-                iconColor = '#F08080'
-            })
-        end
-    elseif inJob == true then
-        lib.notify({
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'You already have a delivery started, Check your GPS',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
+    if inJob then
+        Notify('You already have a delivery started, Check your GPS')
+        return
+    end
+
+    local burgeralert = lib.alertDialog({
+        header = 'Burgershot Delivery',
+        content = 'Are you sure you would like to start a delivery?',
+        centered = true,
+        size = 'xs',
+        cancel = true,
+        labels = {
+            cancel = 'No',
+            confirm = 'Yes',
+        },
+    })
+
+    if burgeralert == 'confirm' then
+        TriggerEvent('bd-burgershot:client:RecieveDelivery')
+    else
+        Notify('You declined the delivery')
     end
 end)
-
------ | CREATING THE DELIVERY LOGICS | -----
 
 local function DeliveryAnim()
-    if lib.progressCircle({
+    return lib.progressCircle({
         duration = 3000,
         position = 'bottom',
         useWhileDead = false,
@@ -169,75 +143,42 @@ local function DeliveryAnim()
             clip = 'place_firework_4_cone',
         },
     })
-    then -- if progressCircle is going then
-        -- do this
-    else
-        lib.notify({
-            id = 'burger_shot',
-            title = 'Burgershot',
-            description = 'Canceled',
-            showDuration = false,
-            position = 'top',
-            style = {
-                backgroundColor = '#141517',
-                color = '#F08080',
-                ['.description'] = {
-                  color = '#909296'
-                }
-            },
-            icon = 'burger',
-            iconColor = '#F08080'
-        })
-    end
 end
 
------ | RECIEVED THE DELIVERY | -----
 RegisterNetEvent('bd-burgershot:client:RecieveDelivery', function()
-    local route = math.random(1, #Config.DeliveryLocations["deliveryroute"])
-    local randomRoute = Config.DeliveryLocations["deliveryroute"][math.random(1, #Config.DeliveryLocations["deliveryroute"])].coords
+    local routes = Config.DeliveryLocations['deliveryroute']
+    local randomRoute = routes[math.random(1, #routes)].coords
+
     deliveryBlip = AddBlipForCoord(randomRoute.x, randomRoute.y, randomRoute.z)
     SetBlipDisplay(deliveryBlip, 4)
     SetBlipScale(deliveryBlip, 0.7)
     SetBlipSprite(deliveryBlip, 280)
     SetBlipColour(deliveryBlip, 6)
     SetBlipAsShortRange(deliveryBlip, true)
-    BeginTextCommandSetBlipName("STRING")
-    AddTextComponentSubstringPlayerName("Customer")
+    BeginTextCommandSetBlipName('STRING')
+    AddTextComponentSubstringPlayerName('Customer')
     EndTextCommandSetBlipName(deliveryBlip)
     SetBlipRoute(deliveryBlip, true)
+
     inJob = true
     TriggerServerEvent('bd-burgershot:server:RecieveBags')
-    lib.notify({
-        id = 'burger_shot',
-        title = 'Burgershot',
-        description = 'Delivery Started! Check your GPS for the marked location',
-        showDuration = false,
-        position = 'top',
-        style = {
-            backgroundColor = '#141517',
-            color = '#F08080',
-            ['.description'] = {
-              color = '#909296'
-            }
-        },
-        icon = 'burger',
-        iconColor = '#F08080'
-    })
+    Notify('Delivery Started! Check your GPS for the marked location')
+
     if Config.TargetSystem == 'qb' then
-        exports['qb-target']:AddCircleZone("BurgershotDelivery", randomRoute, 1.0, {
-            name = "BurgershotDelivery",
-            debugPoly = false,
+        exports['qb-target']:AddCircleZone('BurgershotDelivery', randomRoute, 1.0, {
+            name = 'BurgershotDelivery',
+            debugPoly = Config.DebugZones,
         }, {
             options = {
                 {
-                    type = "client",
-                    event = "bd-burgershot:client:CompleteDelivery",
-                    icon = "fa-solid fa-bag-shopping",
+                    type = 'client',
+                    event = 'bd-burgershot:client:CompleteDelivery',
+                    icon = 'fa-solid fa-bag-shopping',
                     label = 'Place on door step',
-                    job = Config.Jobname
+                    job = Config.Jobname,
                 },
             },
-            distance = 2.5
+            distance = 2.5,
         })
     elseif Config.TargetSystem == 'ox' then
         exports.ox_target:addBoxZone({
@@ -245,48 +186,37 @@ RegisterNetEvent('bd-burgershot:client:RecieveDelivery', function()
             name = 'burgerdelivery',
             size = vec3(1, 1, 1),
             rotation = 45,
+            debug = Config.DebugZones,
             options = {
                 {
                     event = 'bd-burgershot:client:CompleteDelivery',
                     icon = 'fa-solid fa-bag-shopping',
                     label = 'Place On Door Step',
-                    groups = {
-                        Config.Jobname
-                    },
-                }
-            }
+                    groups = { Config.Jobname },
+                },
+            },
         })
     end
-    print(randomRoute)
 end)
 
------ | COMPLETING DELIVERY | -----
 RegisterNetEvent('bd-burgershot:client:CompleteDelivery', function()
-    DeliveryAnim()
+    if not inJob then return end
+
+    if not DeliveryAnim() then
+        Notify('Canceled')
+        return
+    end
+
     RemoveBlip(deliveryBlip)
+    deliveryBlip = nil
     inJob = false
+
     if Config.TargetSystem == 'qb' then
-        --
-        exports['qb-target']:RemoveZone("BurgershotDelivery")
+        exports['qb-target']:RemoveZone('BurgershotDelivery')
     elseif Config.TargetSystem == 'ox' then
         exports.ox_target:removeZone('burgerdelivery')
     end
+
     TriggerServerEvent('bd-burgershot:server:FinishDelivery')
-    TriggerServerEvent('bd-burgershot:server:FinishDeliveryPay')
-    lib.notify({
-        id = 'burger_shot',
-        title = 'Burgershot',
-        description = 'Customer has recieved there order!',
-        showDuration = false,
-        position = 'top',
-        style = {
-            backgroundColor = '#141517',
-            color = '#F08080',
-            ['.description'] = {
-              color = '#909296'
-            }
-        },
-        icon = 'burger',
-        iconColor = '#F08080'
-    })
+    Notify('Customer has recieved there order!')
 end)
