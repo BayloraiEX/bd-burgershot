@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Burgershot Kiosk</title>
+<link rel="stylesheet" href="kiosk.css">
+<link rel="stylesheet" href="bossmenu.css">
+</head>
+<body>
+    <div id="kiosk" class="hidden">
+        <div class="tablet-bezel">
+
+            <div class="tablet-screen">
+
+                <div class="status-bar">
+                    <span id="statusClock" class="status-clock">12:00 PM</span>
+                    <span class="status-label">Burgershot POS</span>
+                    <div class="status-icons">
+                        <svg class="wifi-icon" viewBox="0 0 24 18" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 15.5a1.6 1.6 0 1 1 0-3.2 1.6 1.6 0 0 1 0 3.2Z" fill="currentColor"/>
+                            <path d="M7.8 10.8a6 6 0 0 1 8.4 0" stroke-width="1.8" stroke="currentColor" fill="none" stroke-linecap="round"/>
+                            <path d="M4.3 7.3a11 11 0 0 1 15.4 0" stroke-width="1.8" stroke="currentColor" fill="none" stroke-linecap="round"/>
+                        </svg>
+                        <div class="battery-icon">
+                            <div class="battery-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kiosk-frame">
+
+                    <header class="kiosk-header">
+                        <div class="brand">
+                            <span class="brand-burger">🍔</span>
+                            <span class="brand-text">BURGERSHOT</span>
+                            <span class="brand-sub" id="brandSub">Employee Register</span>
+                        </div>
+                        <button id="closeBtn" class="close-btn" title="Close (ESC)">✕</button>
+                    </header>
+
+                    <div class="kiosk-body">
+
+                        <!-- Category tabs -->
+                        <nav id="categoryTabs" class="category-tabs"></nav>
+
+                        <!-- Item grid -->
+                        <main id="itemGrid" class="item-grid"></main>
+
+                        <!-- Cart / order summary -->
+                        <aside class="cart-panel">
+                            <div class="cart-title">Current Order</div>
+                            <div id="cartItems" class="cart-items">
+                                <div class="cart-empty">No items yet. Tap something tasty!</div>
+                            </div>
+                            <div class="cart-footer">
+                                <div class="customer-id-row">
+                                    <label for="customerId">Customer Server ID</label>
+                                    <input type="number" id="customerId" min="1" placeholder="e.g. 42" autocomplete="off">
+                                </div>
+                                <div class="cart-total-row">
+                                    <span>Total</span>
+                                    <span id="cartTotal">$0</span>
+                                </div>
+                                <button id="clearBtn" class="btn btn-ghost">Clear</button>
+                                <button id="printBtn" class="btn btn-primary" disabled>Send Order</button>
+                            </div>
+                        </aside>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="bossmenu" class="hidden">
+        <div class="boss-app">
+
+            <aside class="boss-sidebar">
+                <div class="boss-brand">
+                    <span class="boss-brand-icon">💼</span>
+                    <span class="boss-brand-text">BOSS MENU</span>
+                </div>
+
+                <nav class="boss-nav">
+                    <button class="boss-nav-item active" data-tab="overview">
+                        <span class="boss-nav-icon">▦</span> Overview
+                    </button>
+                    <button class="boss-nav-item" data-tab="orders">
+                        <span class="boss-nav-icon">📦</span> Orders
+                    </button>
+                    <button class="boss-nav-item" data-tab="stock">
+                        <span class="boss-nav-icon">🧊</span> Stock
+                    </button>
+                    <button class="boss-nav-item" data-tab="management">
+                        <span class="boss-nav-icon">👥</span> Employees
+                    </button>
+                    <button class="boss-nav-item" data-tab="finances">
+                        <span class="boss-nav-icon">💰</span> Finances
+                    </button>
+                </nav>
+
+                <div class="boss-sidebar-footer">
+                    <button id="bossCloseBtn" class="boss-close-btn" title="Close (ESC)">⏻ Close</button>
+                </div>
+            </aside>
+
+            <main class="boss-main">
+
+                <section id="overviewSection" class="boss-section active">
+                    <header class="boss-section-header">
+                        <h1>Overview</h1>
+                        <p>A quick look at your business.</p>
+                    </header>
+
+                    <div class="boss-stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon workers">🧑‍🍳</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total Workers</div>
+                                <div class="stat-value" id="totalWorkers">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon onduty">🟢</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Staff On Duty</div>
+                                <div class="stat-value" id="staffOnDuty">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon balance">💼</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Society Balance</div>
+                                <div class="stat-value" id="overviewBalanceValue">$0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title">Money Flow <span class="chart-subtitle">Last 7 Days</span></div>
+                            <div class="chart-legend">
+                                <span class="chart-legend-item"><span class="chart-dot in"></span>Received</span>
+                                <span class="chart-legend-item"><span class="chart-dot out"></span>Spent</span>
+                            </div>
+                        </div>
+                        <div id="overviewChart" class="money-chart"></div>
+                    </div>
+                </section>
+
+                <section id="ordersSection" class="boss-section">
+                    <header class="boss-section-header">
+                        <h1>Orders</h1>
+                        <p>Order supplies for the restaurant using company funds.</p>
+                    </header>
+
+                    <div id="supplyStatusBanner" class="supply-status-banner"></div>
+
+                    <div class="orders-layout">
+                        <nav id="orderCategoryTabs" class="category-tabs"></nav>
+
+                        <main id="orderItemGrid" class="item-grid"></main>
+
+                        <aside class="cart-panel">
+                            <div class="cart-title">Supply Order</div>
+                            <div id="orderCartItems" class="cart-items">
+                                <div class="cart-empty">No items selected.</div>
+                            </div>
+                            <div class="cart-footer">
+                                <div class="cart-total-row">
+                                    <span>Total</span>
+                                    <span id="orderCartTotal">$0</span>
+                                </div>
+                                <button id="orderClearBtn" class="btn btn-ghost">Clear</button>
+                                <button id="orderSubmitBtn" class="btn btn-primary" disabled>Place Order</button>
+                            </div>
+                        </aside>
+                    </div>
+                </section>
+
+                <section id="stockSection" class="boss-section">
+                    <header class="boss-section-header">
+                        <h1>Stock</h1>
+                        <p>Cooking ingredients currently sitting in the Storage and Fridge.</p>
+                    </header>
+
+                    <div class="stock-toolbar">
+                        <button id="stockRefreshBtn" class="btn btn-ghost">↻ Refresh</button>
+                        <span id="stockUpdatedAt" class="stock-updated"></span>
+                    </div>
+
+                    <div id="stockError" class="boss-error"></div>
+
+                    <div class="stock-table">
+                        <div class="stock-head">
+                            <span>Ingredient</span>
+                            <span>Storage</span>
+                            <span>Fridge</span>
+                            <span>Total</span>
+                        </div>
+                        <div id="stockList" class="stock-body"></div>
+                    </div>
+                </section>
+
+                <section id="financesSection" class="boss-section">
+                    <header class="boss-section-header">
+                        <h1>Finances</h1>
+                        <p>Manage your company's society funds.</p>
+                    </header>
+
+                    <div class="boss-stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon balance">💼</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Society Balance</div>
+                                <div class="stat-value" id="balanceValue">$0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon profit">📈</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Weekly Profit</div>
+                                <div class="stat-value positive" id="weeklyProfit">+$0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon expense">📉</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Weekly Expenses</div>
+                                <div class="stat-value negative" id="weeklyExpense">-$0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-card-header">
+                            <div class="chart-title">Money Flow <span class="chart-subtitle">Last 14 Days</span></div>
+                            <div class="chart-legend">
+                                <span class="chart-legend-item"><span class="chart-dot in"></span>Received</span>
+                                <span class="chart-legend-item"><span class="chart-dot out"></span>Spent</span>
+                            </div>
+                        </div>
+                        <div id="financesChart" class="money-chart money-chart-tall"></div>
+                    </div>
+
+                    <div class="boss-panel-title">Recent Transactions</div>
+                    <div class="transaction-table">
+                        <div class="transaction-head">
+                            <span>Description</span>
+                            <span>Type</span>
+                            <span>Amount</span>
+                            <span>Date</span>
+                        </div>
+                        <div id="transactionList" class="transaction-body"></div>
+                    </div>
+                </section>
+
+                <section id="managementSection" class="boss-section">
+                    <header class="boss-section-header">
+                        <h1>Employees</h1>
+                        <p>Hire, promote, demote, and fire your staff.</p>
+                    </header>
+
+                    <div class="hire-card">
+                        <div class="hire-row">
+                            <input type="number" id="hireServerId" min="1" placeholder="Server ID to hire" autocomplete="off">
+                            <button id="hireBtn" class="btn-red">Hire</button>
+                        </div>
+                        <div id="bossError" class="boss-error"></div>
+                    </div>
+
+                    <div class="boss-panel-title">Staff</div>
+                    <div id="employeeList" class="employee-list"></div>
+                </section>
+
+            </main>
+
+        </div>
+    </div>
+
+    <script src="kiosk.js"></script>
+    <script src="bossmenu.js"></script>
+</body>
+</html>
