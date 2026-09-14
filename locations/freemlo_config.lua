@@ -31,7 +31,7 @@ Config.Blip = {
 
 Config.Locations = {
   ClockIn = {
-    coords = vector4(-1193.03, -898.63, 13.99, 31.42)
+    coords = vector4(-1193.03, -898.63, 13.99, 31.42),
     size = vec3(1.9, 1.9, 1.9),
   },
   BossMenu = vector4(-1193.48, -895.38, 14.2, 328.10),
