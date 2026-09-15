@@ -82,7 +82,13 @@ RegisterNetEvent('bd-burgershot:server:createTicket', function(orderItems, total
         })
         return
     end
-    exports['nfs-billing']:depositSociety(Config.SocietyAccount, verifiedTotal)
+    if Config.BankSystem == 'renewed' then
+        exports['Renewed-Banking']:addAccountMoney(Config.SocietyAccount, verifiedTotal)
+    elseif Config.BankSystem == 'qb' then
+        exports['qb-banking']:AddMoney(Config.SocietyAccount, verifiedTotal)
+    elseif Config.BankSystem == 'nfs' then
+        exports['nfs-billing']:depositSociety(Config.SocietyAccount, verifiedTotal)
+    end
     exports['bd-burgershot']:LogBossTransaction('in', verifiedTotal, ('Order #%s - %s'):format(ticketId, description))
 
     notifyWorker(('Order #%s: customer paid $%d. Enjoy!'):format(ticketId, verifiedTotal), '#8fd694')
