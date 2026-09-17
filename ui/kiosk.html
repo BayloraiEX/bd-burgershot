@@ -234,6 +234,28 @@
                         </div>
                     </div>
 
+                    <div class="funds-card">
+                        <div class="boss-panel-title">Manage Funds</div>
+                        <div class="funds-row">
+                            <div class="funds-input-group funds-amount-group">
+                                <label for="fundsAmount">Amount</label>
+                                <input type="number" id="fundsAmount" min="1" placeholder="e.g. 500" autocomplete="off">
+                            </div>
+                            <div class="funds-input-group">
+                                <label for="fundsAccount">Account</label>
+                                <select id="fundsAccount">
+                                    <option value="cash">Cash</option>
+                                    <option value="bank">Bank</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="funds-actions">
+                            <button id="depositBtn" class="btn-deposit">↓ Deposit</button>
+                            <button id="withdrawBtn" class="btn-withdraw">↑ Withdraw</button>
+                        </div>
+                        <div id="fundsError" class="boss-error"></div>
+                    </div>
+
                     <div class="chart-card">
                         <div class="chart-card-header">
                             <div class="chart-title">Money Flow <span class="chart-subtitle">Last 14 Days</span></div>
