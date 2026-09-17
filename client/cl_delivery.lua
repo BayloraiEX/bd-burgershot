@@ -2,6 +2,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 local deliveryBlip = nil
 local inJob = false
+local deliveryDoorCoords = nil
 
 local function Notify(description, color)
     lib.notify({
@@ -26,6 +27,13 @@ local function FetchModel(model)
     RequestModel(GetHashKey(model))
     while not HasModelLoaded(model) do
         Wait(100)
+    end
+end
+
+local function LoadAnimDict(dict)
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        Wait(10)
     end
 end
 
@@ -126,10 +134,23 @@ RegisterNetEvent('bd-burgershot:client:DeliveryStartAlert', function()
     end
 end)
 
-local function DeliveryAnim()
-    return lib.progressCircle({
-        duration = 3000,
+local function PlayKnock(doorCoords)
+    local ped = PlayerPedId()
+    local cfg = Config.DeliveryCutscene
+
+    local pcoords = GetEntityCoords(ped)
+    local heading = GetHeadingFromVector_2d(doorCoords.x - pcoords.x, doorCoords.y - pcoords.y)
+    SetEntityHeading(ped, heading)
+
+    FetchModel(cfg.BagProp)
+    local bagProp = CreateObject(GetHashKey(cfg.BagProp), pcoords.x, pcoords.y, pcoords.z, false, false, false)
+    local rHand = GetEntityBoneIndexByName(ped, 'SKEL_R_HAND')
+    AttachEntityToEntity(bagProp, ped, rHand, 0.03, 0.02, 0.0, -90.0, 0.0, 0.0, true, true, false, true, 1, true)
+
+    local ok, completed = pcall(lib.progressCircle, {
+        duration = cfg.KnockDuration,
         position = 'bottom',
+        label = 'Knocking on the door...',
         useWhileDead = false,
         canCancel = true,
         disable = {
@@ -138,16 +159,128 @@ local function DeliveryAnim()
             combat = true,
         },
         anim = {
-            dict = 'anim@mp_fireworks',
-            scenario = 'anim@mp_fireworks',
-            clip = 'place_firework_4_cone',
+            dict = cfg.KnockAnim.dict,
+            clip = cfg.KnockAnim.clip,
         },
     })
+
+    if not ok then
+        print(('[bd-burgershot] knock animation failed to play: %s'):format(tostring(completed)))
+    end
+
+    if not ok or not completed then
+        ClearPedTasks(ped)
+        DeleteEntity(bagProp)
+        SetModelAsNoLongerNeeded(cfg.BagProp)
+        return false, nil, nil
+    end
+
+    return true, bagProp, heading
+end
+
+local function PlayHandoff(doorCoords, bagProp, playerHeading)
+    local ped = PlayerPedId()
+    local cfg = Config.DeliveryCutscene
+
+    local customerModel = cfg.CustomerPedModels[math.random(1, #cfg.CustomerPedModels)]
+    FetchModel(customerModel)
+
+    local customerHeading = (playerHeading + 180.0) % 360.0
+    local customer = CreatePed(4, GetHashKey(customerModel), doorCoords.x, doorCoords.y, doorCoords.z, customerHeading, false, false)
+    SetEntityAlpha(customer, 0, false)
+    SetBlockingOfNonTemporaryEvents(customer, true)
+    SetEntityInvincible(customer, true)
+    FreezeEntityPosition(customer, true)
+
+    -- "door opens"
+    SetEntityAlpha(customer, 255, false)
+
+    local cam = nil
+    if cfg.UseCamera then
+        local camCoords = GetOffsetFromEntityInWorldCoords(ped, 1.1, -0.9, 0.6)
+        cam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
+        SetCamCoord(cam, camCoords.x, camCoords.y, camCoords.z)
+        SetCamFov(cam, 45.0)
+        PointCamAtCoord(cam, (doorCoords.x + GetEntityCoords(ped).x) / 2, (doorCoords.y + GetEntityCoords(ped).y) / 2, doorCoords.z + 0.5)
+        SetCamActive(cam, true)
+        RenderScriptCams(true, true, 500, true, true)
+    end
+
+    LoadAnimDict(cfg.HandoverAnim.customer.dict)
+    TaskPlayAnim(customer, cfg.HandoverAnim.customer.dict, cfg.HandoverAnim.customer.clip, 3.0, -3.0, cfg.HandoverDuration, 0, 0.0, false, false, false)
+
+    CreateThread(function()
+        Wait(cfg.HandoverDuration - 500)
+        if DoesEntityExist(bagProp) and DoesEntityExist(customer) then
+            local lHand = GetEntityBoneIndexByName(customer, 'SKEL_L_HAND')
+            AttachEntityToEntity(bagProp, customer, lHand, 0.03, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+        end
+    end)
+
+    LoadAnimDict(cfg.HandoverAnim.player.dict)
+    local ok, err = pcall(lib.progressCircle, {
+        duration = cfg.HandoverDuration,
+        position = 'bottom',
+        label = 'Handing over the order...',
+        useWhileDead = false,
+        canCancel = false,
+        disable = {
+            car = true,
+            move = true,
+            combat = true,
+        },
+        anim = {
+            dict = cfg.HandoverAnim.player.dict,
+            clip = cfg.HandoverAnim.player.clip,
+        },
+    })
+
+    if not ok then
+        print(('[bd-burgershot] handover animation failed to play: %s'):format(tostring(err)))
+        ClearPedTasks(ped)
+    end
+
+    if cam then
+        RenderScriptCams(false, true, 500, true, true)
+        DestroyCam(cam, false)
+    end
+
+    DeleteEntity(bagProp)
+    SetModelAsNoLongerNeeded(cfg.BagProp)
+
+    ClearPedTasksImmediately(customer)
+    SetEntityAlpha(customer, 0, false)
+    Wait(200)
+    DeleteEntity(customer)
+    SetModelAsNoLongerNeeded(customerModel)
+end
+
+local function DeliveryAnim(doorCoords)
+    local cfg = Config.DeliveryCutscene
+
+    if not cfg.Enabled then
+        return lib.progressCircle({
+            duration = 3000,
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = true,
+            disable = { car = true, move = true, combat = true },
+        })
+    end
+
+    local knocked, bagProp, heading = PlayKnock(doorCoords)
+    if not knocked then
+        return false
+    end
+
+    PlayHandoff(doorCoords, bagProp, heading)
+    return true
 end
 
 RegisterNetEvent('bd-burgershot:client:RecieveDelivery', function()
     local routes = Config.DeliveryLocations['deliveryroute']
     local randomRoute = routes[math.random(1, #routes)].coords
+    deliveryDoorCoords = randomRoute
 
     deliveryBlip = AddBlipForCoord(randomRoute.x, randomRoute.y, randomRoute.z)
     SetBlipDisplay(deliveryBlip, 4)
@@ -202,13 +335,14 @@ end)
 RegisterNetEvent('bd-burgershot:client:CompleteDelivery', function()
     if not inJob then return end
 
-    if not DeliveryAnim() then
+    if not DeliveryAnim(deliveryDoorCoords) then
         Notify('Canceled')
         return
     end
 
     RemoveBlip(deliveryBlip)
     deliveryBlip = nil
+    deliveryDoorCoords = nil
     inJob = false
 
     if Config.TargetSystem == 'qb' then
