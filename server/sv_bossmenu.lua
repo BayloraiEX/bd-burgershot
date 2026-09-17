@@ -38,6 +38,32 @@ local function GetSocietyBalance()
     return tonumber(balance) or 0
 end
 
+local function WithdrawSociety(amount)
+    local ok, result = pcall(function()
+        if Config.BankSystem == 'qb' then
+            return exports['qb-banking']:RemoveMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'renewed' then
+            return exports['Renewed-Banking']:removeAccountMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'nfs' then
+            return exports['nfs-billing']:withdrawSociety(Config.SocietyAccount, amount)
+        end
+    end)
+    return ok and result ~= false
+end
+
+local function DepositSociety(amount)
+    local ok, result = pcall(function()
+        if Config.BankSystem == 'qb' then
+            return exports['qb-banking']:AddMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'renewed' then
+            return exports['Renewed-Banking']:addAccountMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'nfs' then
+            return exports['nfs-billing']:depositSociety(Config.SocietyAccount, amount)
+        end
+    end)
+    return ok and result ~= false
+end
+
 local function LogTransaction(txType, amount, description)
     if txType ~= 'in' and txType ~= 'out' then return end
     amount = tonumber(amount) or 0
@@ -254,4 +280,67 @@ end)
 
 lib.callback.register('bd-burgershot:server:BossDemote', function(source, citizenid)
     return ChangeGrade(source, citizenid, -1)
+end)
+
+local function GetPlayerFullName(Player)
+    local charinfo = Player.PlayerData.charinfo
+    if charinfo and charinfo.firstname then
+        return ('%s %s'):format(charinfo.firstname, charinfo.lastname or '')
+    end
+    return Player.PlayerData.citizenid
+end
+
+lib.callback.register('bd-burgershot:server:BossDeposit', function(source, amount, account)
+    local Player, err = GetBossPlayer(source)
+    if not Player then return BuildBossPayload(false, err) end
+
+    amount = math.floor(tonumber(amount) or 0)
+    if amount <= 0 then return BuildBossPayload(false, 'Enter a valid amount.') end
+
+    account = (account == 'cash') and 'cash' or 'bank'
+
+    local onHand = (Player.PlayerData.money and Player.PlayerData.money[account]) or 0
+    if onHand < amount then
+        return BuildBossPayload(false, ('You do not have $%d in %s.'):format(amount, account))
+    end
+
+    if not Player.Functions.RemoveMoney(account, amount, 'Boss Deposit') then
+        return BuildBossPayload(false, 'Failed to take that money from you.')
+    end
+
+    if not DepositSociety(amount) then
+        Player.Functions.AddMoney(account, amount, 'Boss Deposit Refund')
+        return BuildBossPayload(false, 'Something went wrong depositing into the society account.')
+    end
+
+    LogTransaction('in', amount, ('Deposit by %s'):format(GetPlayerFullName(Player)))
+    Notify(source, ('You deposited $%d into the society account.'):format(amount), '#8fd694')
+
+    return BuildBossPayload(true, nil)
+end)
+
+lib.callback.register('bd-burgershot:server:BossWithdraw', function(source, amount, account)
+    local Player, err = GetBossPlayer(source)
+    if not Player then return BuildBossPayload(false, err) end
+
+    amount = math.floor(tonumber(amount) or 0)
+    if amount <= 0 then return BuildBossPayload(false, 'Enter a valid amount.') end
+
+    account = (account == 'cash') and 'cash' or 'bank'
+
+    local balance = GetSocietyBalance()
+    if balance < amount then
+        return BuildBossPayload(false, ('Insufficient funds. Balance: $%d.'):format(balance))
+    end
+
+    if not WithdrawSociety(amount) then
+        return BuildBossPayload(false, 'Something went wrong withdrawing from the society account.')
+    end
+
+    Player.Functions.AddMoney(account, amount, 'Boss Withdraw')
+
+    LogTransaction('out', amount, ('Withdrawal by %s'):format(GetPlayerFullName(Player)))
+    Notify(source, ('You withdrew $%d from the society account.'):format(amount), '#8fd694')
+
+    return BuildBossPayload(true, nil)
 end)
