@@ -37,7 +37,26 @@ end
 
 local function WithdrawSociety(amount)
     local ok, result = pcall(function()
-        return exports['nfs-billing']:withdrawSociety(Config.SocietyAccount, amount)
+        if Config.BankSystem == 'qb' then
+            return exports['qb-banking']:RemoveMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'renewed' then
+            return exports['Renewed-Banking']:removeAccountMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'nfs' then
+            return exports['nfs-billing']:withdrawSociety(Config.SocietyAccount, amount)
+        end
+    end)
+    return ok and result ~= false
+end
+
+local function DepositSociety(amount)
+    local ok, result = pcall(function()
+        if Config.BankSystem == 'qb' then
+            return exports['qb-banking']:AddMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'renewed' then
+            return exports['Renewed-Banking']:addAccountMoney(Config.SocietyAccount, amount)
+        elseif Config.BankSystem == 'nfs' then
+            return exports['nfs-billing']:depositSociety(Config.SocietyAccount, amount)
+        end
     end)
     return ok and result ~= false
 end
@@ -103,14 +122,15 @@ lib.callback.register('bd-burgershot:server:BossOrderSupplies', function(source,
 
     exports['bd-burgershot']:LogBossTransaction('out', total, ('Supply Order #%s - %s'):format(orderId, summary))
 
-    local spawnCoords = Config.SupplyVanSpawns[math.random(1, #Config.SupplyVanSpawns)]
+    local area = Config.SupplyVanSpawns[math.random(1, #Config.SupplyVanSpawns)]
 
     activeOrder = {
         id = orderId,
         lines = lines,
         total = total,
         orderedBy = Player.PlayerData.citizenid,
-        spawnCoords = spawnCoords,
+        pedCoords = area.pedCoords,
+        vehicleCoords = area.vehicleCoords,
         claimed = false,
         claimedBy = nil,
     }
@@ -118,7 +138,7 @@ lib.callback.register('bd-burgershot:server:BossOrderSupplies', function(source,
     for _, playerSrc in ipairs(GetOnDutyBurgershotPlayers()) do
         TriggerClientEvent('bd-burgershot:client:SupplyOrderReady', playerSrc, {
             id = orderId,
-            spawnCoords = spawnCoords,
+            pedCoords = area.pedCoords,
             dropzone = Config.SupplyDropzone,
             summary = summary,
         })
@@ -139,7 +159,33 @@ RegisterNetEvent('bd-burgershot:server:ClaimSupplyVan', function(orderId)
     activeOrder.claimedBy = src
 
     TriggerClientEvent('bd-burgershot:client:SupplyVanClaimed', -1, orderId, src)
-    TriggerClientEvent('bd-burgershot:client:SpawnSupplyVan', src, activeOrder.spawnCoords, Config.SupplyDropzone)
+    TriggerClientEvent('bd-burgershot:client:SpawnSupplyVan', src, activeOrder.vehicleCoords, Config.SupplyDropzone)
+end)
+
+RegisterNetEvent('bd-burgershot:server:CancelSupplyOrder', function(orderId)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player or Player.PlayerData.job.name ~= Config.Jobname then return end
+    if not activeOrder or activeOrder.id ~= orderId or activeOrder.claimed then return end
+
+    local refunded = DepositSociety(activeOrder.total)
+    if refunded then
+        exports['bd-burgershot']:LogBossTransaction('in', activeOrder.total, ('Supply Order #%s cancelled - refund'):format(orderId))
+        Notify(src, ('You declined order #%s. It has been cancelled and the society was refunded $%d.'):format(orderId, activeOrder.total), '#F08080')
+    else
+        Notify(src, ('You declined order #%s. It has been cancelled, but the refund failed - notify an admin.'):format(orderId), '#F08080')
+    end
+
+    local orderedByPlayer = QBCore.Functions.GetPlayerByCitizenId(activeOrder.orderedBy)
+    if orderedByPlayer and orderedByPlayer.PlayerData.source ~= src then
+        Notify(orderedByPlayer.PlayerData.source, ('Supply order #%s was declined and has been cancelled.'):format(orderId), '#F08080')
+    end
+
+    for _, playerSrc in ipairs(GetOnDutyBurgershotPlayers()) do
+        TriggerClientEvent('bd-burgershot:client:SupplyOrderCancelled', playerSrc, orderId)
+    end
+
+    activeOrder = nil
 end)
 
 RegisterNetEvent('bd-burgershot:server:CompleteSupplyOrder', function(orderId)
