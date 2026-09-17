@@ -3,7 +3,7 @@ game 'gta5'
 lua54 'yes'
 author 'Baylorai Development'
 description 'QBCore Burgershot Job using ox_lib'
-version '0.2.0'
+version '2.1.0'
 
 shared_scripts {
 	'@ox_lib/init.lua',
