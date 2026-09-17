@@ -445,6 +445,112 @@
     stroke-width: 1.5;
 }
 
+/* ---------- MANAGE FUNDS ---------- */
+.funds-card {
+    background: #17181c;
+    border: 1px solid #2a2b30;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+}
+
+.funds-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.funds-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.funds-amount-group {
+    flex: 1;
+}
+
+.funds-input-group label {
+    color: #b7b8bd;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.funds-input-group input,
+.funds-input-group select {
+    background: #101114;
+    border: 1px solid #33343a;
+    color: #fff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.funds-input-group input {
+    width: 100%;
+}
+
+.funds-input-group select {
+    width: 130px;
+}
+
+.funds-input-group input:focus,
+.funds-input-group select:focus {
+    border-color: #e8342f;
+}
+
+.funds-input-group input.input-error {
+    border-color: #e8342f;
+    animation: shake 0.2s linear;
+}
+
+.funds-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-deposit,
+.btn-withdraw {
+    flex: 1;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-deposit {
+    background: rgba(74, 222, 128, 0.16);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+    color: #4ade80;
+}
+
+.btn-deposit:hover:not(:disabled) {
+    background: rgba(74, 222, 128, 0.28);
+}
+
+.btn-withdraw {
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+}
+
+.btn-withdraw:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.28);
+}
+
+.btn-deposit:disabled,
+.btn-withdraw:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 /* ---------- TRANSACTIONS TABLE ---------- */
 .transaction-table {
     background: #17181c;
