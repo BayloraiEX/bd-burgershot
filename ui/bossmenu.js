@@ -18,6 +18,11 @@
     const weeklyProfitEl = document.getElementById('weeklyProfit');
     const weeklyExpenseEl = document.getElementById('weeklyExpense');
     const transactionListEl = document.getElementById('transactionList');
+    const fundsAmountInput = document.getElementById('fundsAmount');
+    const fundsAccountSelect = document.getElementById('fundsAccount');
+    const depositBtn = document.getElementById('depositBtn');
+    const withdrawBtn = document.getElementById('withdrawBtn');
+    const fundsErrorEl = document.getElementById('fundsError');
     const employeeListEl = document.getElementById('employeeList');
     const hireInput = document.getElementById('hireServerId');
     const hireBtn = document.getElementById('hireBtn');
@@ -404,6 +409,67 @@
             row.appendChild(amount);
             row.appendChild(date);
             transactionListEl.appendChild(row);
+        });
+    }
+
+    /* =========================================================
+       FINANCES TAB - deposit / withdraw
+       ========================================================= */
+
+    function showFundsError(msg) {
+        if (!fundsErrorEl) return;
+        fundsErrorEl.textContent = msg || '';
+        fundsErrorEl.classList.toggle('visible', !!msg);
+    }
+
+    function resetFundsForm() {
+        showFundsError('');
+        if (fundsAmountInput) {
+            fundsAmountInput.value = '';
+            fundsAmountInput.classList.remove('input-error');
+        }
+    }
+
+    function readFundsAmount() {
+        const amount = parseInt(fundsAmountInput.value, 10);
+        if (!amount || amount <= 0) {
+            fundsAmountInput.classList.add('input-error');
+            fundsAmountInput.focus();
+            return null;
+        }
+        return amount;
+    }
+
+    async function submitFundsAction(endpoint) {
+        const amount = readFundsAmount();
+        if (amount === null) return;
+
+        showFundsError('');
+        depositBtn.disabled = true;
+        withdrawBtn.disabled = true;
+
+        const payload = await nuiPost(endpoint, { amount, account: fundsAccountSelect.value });
+
+        depositBtn.disabled = false;
+        withdrawBtn.disabled = false;
+
+        if (!payload || !payload.ok) {
+            showFundsError((payload && payload.error) || 'Action failed.');
+        } else {
+            fundsAmountInput.value = '';
+        }
+        applyPayload(payload);
+    }
+
+    if (depositBtn) {
+        depositBtn.addEventListener('click', () => submitFundsAction('bossDeposit'));
+    }
+    if (withdrawBtn) {
+        withdrawBtn.addEventListener('click', () => submitFundsAction('bossWithdraw'));
+    }
+    if (fundsAmountInput) {
+        fundsAmountInput.addEventListener('input', () => {
+            fundsAmountInput.classList.remove('input-error');
         });
     }
 
@@ -811,6 +877,7 @@
         orderCart = {};
         activeOrderCategory = 0;
         showError('');
+        resetFundsForm();
         switchTab('overview');
         renderOverviewStats();
         renderFinances();
