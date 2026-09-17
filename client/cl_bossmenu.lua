@@ -73,13 +73,21 @@ RegisterNUICallback('bossDemote', function(data, cb)
     cb(payload or { ok = false, error = 'No response from server.' })
 end)
 
+RegisterNUICallback('bossDeposit', function(data, cb)
+    local payload = lib.callback.await('bd-burgershot:server:BossDeposit', false, data and data.amount, data and data.account)
+    cb(payload or { ok = false, error = 'No response from server.' })
+end)
+
+RegisterNUICallback('bossWithdraw', function(data, cb)
+    local payload = lib.callback.await('bd-burgershot:server:BossWithdraw', false, data and data.amount, data and data.account)
+    cb(payload or { ok = false, error = 'No response from server.' })
+end)
+
 RegisterNUICallback('bossOrderSupplies', function(data, cb)
     local payload = lib.callback.await('bd-burgershot:server:BossOrderSupplies', false, data and data.cart)
     cb(payload or { ok = false, error = 'No response from server.' })
 end)
 
--- Stock counts can change while the menu is open (staff moving items in/out
--- of the Storage/Fridge), so let the tab pull a fresh snapshot on demand.
 RegisterNUICallback('bossRefreshStock', function(_, cb)
     local payload = lib.callback.await('bd-burgershot:server:GetBossMenuData', false)
     cb(payload or { ok = false, error = 'No response from server.' })
