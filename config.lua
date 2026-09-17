@@ -224,25 +224,42 @@ Config.DeliveryLocations = {
   ['deliveryroute'] = {
     [1] = {
       name = "1",
-      coords = vector4(-952.48, -1077.58, 2.67, 34.72), -- VESPUCCI CANALS / INVENTION CT
+      coords = vector4(-952.48, -1077.58, 1.67, 34.72), -- VESPUCCI CANALS / INVENTION CT
     },
     [2] = {
       name = "2",
-      coords = vector4(-1043.36, -1580.35, 5.03, 34.72), -- LA PUERTA / BAY CITY AVE
+      coords = vector4(-1043.36, -1580.35, 4.03, 34.72), -- LA PUERTA / BAY CITY AVE
     },
     [3] = {
       name = "3",
-      coords = vector4(-1447.65, -537.27, 34.74, 36.38), -- Del Perro Heights Apartment
+      coords = vector4(-1447.65, -537.27, 33.74, 36.38), -- Del Perro Heights Apartment
     },
     [4] = {
       name = "4",
-      coords = vector4(-706.09, -1036.47, 16.41, 36.38), -- Across from south rockford appartments
+      coords = vector4(-706.09, -1036.47, 15.41, 36.38), -- Across from south rockford appartments
     },
     [5] = {
       name = "5",
-      coords = vector4(-702.82, -1023.36, 16.42, 298.18), -- Across from south rockford appartments
+      coords = vector4(-702.82, -1023.36, 15.42, 298.18), -- Across from south rockford appartments
     },
   }
+}
+
+Config.DeliveryCutscene = {
+    Enabled = true, -- set to false to go back to the plain progress-circle wait
+    CustomerPedModels = {
+        'a_f_y_soucent_01', 'a_m_y_soucent_01',
+        'a_f_y_business_02', 'a_m_m_business_01',
+    },
+    BagProp = 'prop_paper_bag_small',
+    KnockAnim = { dict = 'timetable@jimmy@doorknock@', clip = 'knockdoor_idle' },
+    KnockDuration = 2500, -- ms
+    HandoverAnim = {
+        player   = { dict = 'mp_common', clip = 'givetake1_a' },
+        customer = { dict = 'mp_common', clip = 'givetake1_b' },
+    },
+    HandoverDuration = 3000, -- ms
+    UseCamera = true,
 }
 
 Config.MinBag = 1 -- Min amount of food bags for order
@@ -508,10 +525,17 @@ Config.SupplyOrderItems = {
     },
 }
 
--- Multiple possible pickup spots for the supply van - a random one is chosen every time an order is placed.
 Config.SupplyVanSpawns = {
-    vector4(1219.5218505859, -3203.8029785156, 5.5782237052917, 194.77864074707),    -- Port of LS
+    {
+        label = 'Port of LS',
+        pedCoords = vector4(1219.5218505859, -3203.8029785156, 5.5782237052917, 194.77864074707),
+        vehicleCoords = vector4(1200.93, -3202.12, 5.4993, 133.9),
+    },
 }
 
-Config.SupplyVanModel = 'burgervan' -- vehicle spawned for the supply run
-Config.SupplyDropzone = vector4(-1171.58, -894.93, 13.87, 27.1) -- where the van gets unloaded back at Burgershot
+Config.SupplyVanModel = 'burgervan'
+Config.SupplyDropzone = vector4(-1171.58, -894.93, 13.87, 27.1)
+
+Config.SupplyOrderPedModel = 'a_m_y_business_03'
+Config.SupplyOrderPedScenario = 'WORLD_HUMAN_CLIPBOARD' 
+
