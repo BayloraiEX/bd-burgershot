@@ -30,7 +30,7 @@ local function GetSocietyBalance()
         if Config.BankSystem == 'renewed' then
             return exports['Renewed-Banking']:getAccountMoney(Config.SocietyAccount)
         elseif Config.BankSystem == 'qb' then
-            return exports['qb-management']:GetAccount(Config.SocietyAccount)
+            return exports['qb-banking']:GetAccount(Config.SocietyAccount)
         elseif Config.BankSystem == 'nfs' then
             return exports['nfs-billing']:getSocietyBalance(Config.SocietyAccount)
         end
