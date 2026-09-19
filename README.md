@@ -16,7 +16,7 @@ VIDEO - https://youtu.be/dDIrMdZ5Wik
 # RESOURCES
 MLO - https://www.gta5-mods.com/maps/gtaiv-burgershot-interior-sp-and-fivem
 
-# INSTALLATION
+# QB INSTALLATION
 - Start after [qb]
 EAMPLE:
 - ensure [qb]
@@ -93,7 +93,53 @@ burgershot = {
     bs_chopped_onion                = { name = 'bs_chopped_onion', label = 'Chopped Onion', weight = 1, type = 'item', image = 'bs_chopped_onion.png', unique = false, useable = false, shouldClose = true, description = 'Chopped Onion'},
 ```
 
-# For Ox_inventory *
+# QBX INSTALLATION
+- Start after [qbx]
+EXAMPLE
+- ensure [qbx]
+- ensure bd-burgershot
+
+# JOB
+```
+    -- Burger Shot
+    ['burgershot'] = {
+        label = 'BurgerShot',
+        defaultDuty = false,
+        offDutyPay = false,
+        grades = {
+            [0] = {
+                name = 'Janitor',
+                payment = 30
+            },
+            [1] = {
+                name = 'Employee',
+                payment = 75
+            },
+            [2] = {
+                name = 'Sr-Employee',
+                payment = 100
+            },
+            [3] = {
+                name = 'Ast-Manager',
+                payment = 125
+            },
+            [4] = {
+                name = 'Manager',
+                isboss = true,
+                bankAuth = true,
+                payment = 135
+            },
+            [5] = {
+                name = 'CEO',
+                isboss = true,
+                bankAuth = true,
+                payment = 300
+            },
+        },
+    },
+```
+
+# INVENTORY (OX)
 ```
 ----- | Burgershot Items | -----
     -- Ingredients
